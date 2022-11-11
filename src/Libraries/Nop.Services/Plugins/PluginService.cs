@@ -464,11 +464,11 @@ namespace Nop.Services.Plugins
             var pluginDescriptors = _pluginsInfo.PluginDescriptors.ToList();
             foreach (var pluginDescriptor in pluginDescriptors)
             {
-                pluginDescriptor.pluginDescriptor.ShowInPluginsList = true;
+                pluginDescriptor.ShowInPluginsList = true;
             }
 
             //clear the uploaded directory
-            foreach (var directory in _fileProvider.GetDirectories(_fileProvider.MapPath(NopPluginDefaults.UploadedPath)))
+            foreach (var directory in _fileProvider.GetDirectories(_fileProvider.MapPath(NopPluginDefaults.UploadsTempPath)))
                 _fileProvider.DeleteDirectory(directory);
         }
 
