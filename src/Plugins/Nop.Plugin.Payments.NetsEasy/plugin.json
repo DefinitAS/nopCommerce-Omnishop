@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "Nets Easy",
+  "SystemName": "Payments.NetsEasy",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Anders Ulveseth, Definit AS",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Payments.NetsEasy.dll",
+  "Description": "This plugin enables payment with Nets Easy"
+}
