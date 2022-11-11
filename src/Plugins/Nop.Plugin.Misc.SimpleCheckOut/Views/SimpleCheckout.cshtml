@@ -1,0 +1,179 @@
+﻿@model Nop.Plugin.Misc.SimpleCheckOut.Models.SimpleCheckoutModel
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Checkout").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-checkout-page");
+    NopHtml.AppendPageCssClassParts("html-order-confirm-page");
+}
+
+<div class="page checkout-page order-confirm-page">
+    @*@await Component.InvokeAsync("CheckoutProgress", new { step = CheckoutProgressStep.Confirm })*@
+    <div class="page-title">
+        <h1>@T("Checkout.ConfirmYourOrder")</h1>
+    </div>
+
+    <div class="page-body checkout-data">
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.CheckoutConfirmTop, additionalData = Model })
+        <div class="section confirm-order">
+            @if (!string.IsNullOrEmpty(Model.ConfirmModel.MinOrderTotalWarning))
+            {
+                <span class="min-order-warning">@Model.ConfirmModel.MinOrderTotalWarning</span>
+            }
+            else
+            {
+                if (Model.ConfirmModel.TermsOfServiceOnOrderConfirmPage)
+                {
+                    <div id="terms-of-service-warning-box" title="@T("Checkout.TermsOfService")" style="display: none;">
+                        <p>@T("Checkout.TermsOfService.PleaseAccept")</p>
+                    </div>
+                    <div class="terms-of-service">
+                        <input id="termsofservice" type="checkbox" name="termsofservice" />
+                        <label for="termsofservice">@T("Checkout.TermsOfService.IAccept")</label>
+                        @if (Model.ConfirmModel.TermsOfServicePopup)
+                        {
+                            <a class="read" id="read-terms">@T("Checkout.TermsOfService.Read")</a>
+                            <script asp-location="Footer">
+                                $(document).ready(function() {
+                                    $('#read-terms').on('click',
+                                        function(e) {
+                                            e.preventDefault();
+                                            displayPopupContentFromUrl('@Url.RouteUrl("TopicPopup", new {SystemName = "conditionsofuse"})', '@T("Checkout.TermsOfService")');
+                                        });
+                                });
+                            </script>
+                        }
+                        else
+                        {
+                            @*<a class="read" id="read-terms" href="@Url.RouteUrl("Topic", new { SeName = await Html.GetTopicSeNameAsync("conditionsofuse") })">@T("Checkout.TermsOfService.Read")</a>*@
+                        }
+                    </div>
+                }
+
+                @if (Model.LoginModel != null && Model.ShowLogin)
+                {
+                    <div class="returning-wrapper fieldset" style="max-width:600px">
+                        <form asp-route="CheckoutLogin" method="post" autocomplete="off">
+                            <div asp-validation-summary="ModelOnly" class="message-error">@T("Account.Login.Unsuccessful")</div>
+                            <div class="title">
+                                <strong>@T("Account.Login.ReturningCustomer") eller @T("Account.Login.CheckoutAsGuest").ToString().ToLower()</strong>
+                            </div>
+                            <div class="row form-fields">
+                                <div class="col-8">
+                                    @if (Model.LoginModel.UsernamesEnabled)
+                                    {
+                                        <div class="inputs">
+@*                                            <label asp-for="LoginModel.Username" asp-postfix=":"></label>
+*@                                            <input asp-for="LoginModel.Username" class="username" autofocus="autofocus" placeholder="Brukernavn for innlogging"/>
+                                            <span asp-validation-for="LoginModel.Username"></span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="inputs">
+@*                                            <label asp-for="LoginModel.Email" asp-postfix=":"></label>*@
+                                            <input asp-for="LoginModel.Email" class="email" autofocus="autofocus"  placeholder="E-post for innlogging"/>
+                                            <span asp-validation-for="LoginModel.Email"></span>
+                                        </div>
+                                    }
+                                    <div class="inputs">
+@*                                        <label asp-for="LoginModel.Password" asp-postfix=":"></label>*@
+                                        <input asp-for="LoginModel.Password" class="password"  placeholder="Passord for innlogging"/>
+                                        <span asp-validation-for="LoginModel.Password"></span>
+                                    </div>
+                                    <span class="forgot-password">
+                                        <a asp-route="PasswordRecovery">@T("Account.Login.ForgotPassword")</a>
+                                    </span>
+                                </div>
+                                <div class="col-4">
+                                    <div class="inputs reversed">
+                                        <input asp-for="LoginModel.RememberMe" />
+                                        <label asp-for="LoginModel.RememberMe"></label>
+                                    </div>
+                                    @if (Model.LoginModel.DisplayCaptcha)
+                                    {
+                                        <nop-captcha />
+                                    }
+                                    <div class="buttons">
+                                        <button type="submit" class="button-1 login-button">@T("Account.Login.LoginButton")</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                }
+
+                <form method="post" id="confirm-order-form">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="title">
+                            @T("Checkout.BillingAddress")
+                        </div>
+
+                        <div class="enter-address">
+                            <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                            @{
+                                var dataDictBillingAddress = new ViewDataDictionary(ViewData);
+                                dataDictBillingAddress.TemplateInfo.HtmlFieldPrefix = "SelectedBillingAddress";
+                                                                            @await Html.PartialAsync("_CreateOrUpdateAddress", Model.SelectedBillingAddress, dataDictBillingAddress)
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="title">                                    
+                            <input asp-for="BillingAddressModel.ShipToSameAddress" />
+                            <label asp-for="BillingAddressModel.ShipToSameAddress">@T("Checkout.ShipToSameAddress")</label>
+                        </div>
+                        <div id="divShippingAddress" class="enter-address" style="display: none">
+                            <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                            @{
+                                var dataDictShippingAddress = new ViewDataDictionary(ViewData);
+                                dataDictShippingAddress.TemplateInfo.HtmlFieldPrefix = "SelectedShippingAddress";
+                                                                            @await Html.PartialAsync("_CreateOrUpdateAddress", Model.SelectedShippingAddress, dataDictShippingAddress)
+                            }
+                        </div>
+                    </div>
+                </div>
+                    <div class="buttons">
+                        <button type="submit" name="nextstep" class="button-1 confirm-order-next-step-button">@T("Checkout.ConfirmButton")</button>
+                    </div>
+                </form>
+                <script asp-location="Footer">
+
+                    $(document).ready(function() {
+                        const showHideShippingAddress = function() {
+                            const checkBox = document.getElementById("BillingAddressModel_ShipToSameAddress");
+                            const divShippingAddress = document.getElementById("divShippingAddress");
+                            if (checkBox.checked) {
+                                divShippingAddress.style.display = 'none';
+                            } else {
+                                divShippingAddress.style.display = 'block';
+                            }
+                        }
+
+                        showHideShippingAddress();
+                        $('#BillingAddressModel_ShipToSameAddress').on('click', showHideShippingAddress);
+                    });
+                </script>
+
+            }
+            @if (Model.ConfirmModel.Warnings.Count > 0)
+            {
+            <div class="message-error">
+                <ul>
+                    @foreach (var warning in Model.ConfirmModel.Warnings)
+                    {
+                        <li>@warning</li>
+                    }
+                </ul>
+            </div>
+            }
+        </div>
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.CheckoutConfirmBottom, additionalData = Model })
+        <div class="section order-summary">
+            @await Component.InvokeAsync("OrderSummary", new { prepareAndDisplayOrderReviewData = false })
+        </div>
+    </div>
+</div>

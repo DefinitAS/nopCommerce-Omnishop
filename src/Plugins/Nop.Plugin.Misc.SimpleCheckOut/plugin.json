@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Misc",
+  "FriendlyName": "Simple Checkout",
+  "SystemName": "Misc.SimpleCheckOut",
+  "Version": "1.0",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Definit AS",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.SimpleCheckOut.dll",
+  "Description": "Simplified checkout process"
+}
