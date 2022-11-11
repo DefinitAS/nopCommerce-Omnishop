@@ -12,49 +12,29 @@ WORKDIR /src/Presentation/Nop.Web
 # build project   
 RUN dotnet build Nop.Web.csproj -c Release
 
-# build plugins
+# build plugins - nopCommerce default/standard
 WORKDIR /src/Plugins/Nop.Plugin.DiscountRules.CustomerRoles
 RUN dotnet build Nop.Plugin.DiscountRules.CustomerRoles.csproj -c Release
 WORKDIR /src/Plugins/Nop.Plugin.ExchangeRate.EcbExchange
 RUN dotnet build Nop.Plugin.ExchangeRate.EcbExchange.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.ExternalAuth.Facebook
-RUN dotnet build Nop.Plugin.ExternalAuth.Facebook.csproj -c Release
 WORKDIR /src/Plugins/Nop.Plugin.Misc.Sendinblue
 RUN dotnet build Nop.Plugin.Misc.Sendinblue.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Misc.WebApi.Frontend
-RUN dotnet build Nop.Plugin.Misc.WebApi.Frontend.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.MultiFactorAuth.GoogleAuthenticator
-RUN dotnet build Nop.Plugin.MultiFactorAuth.GoogleAuthenticator.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Payments.CheckMoneyOrder
-RUN dotnet build Nop.Plugin.Payments.CheckMoneyOrder.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Payments.Manual
-RUN dotnet build Nop.Plugin.Payments.Manual.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Payments.PayPalCommerce
-RUN dotnet build Nop.Plugin.Payments.PayPalCommerce.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Payments.PayPalStandard
-RUN dotnet build Nop.Plugin.Payments.PayPalStandard.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Pickup.PickupInStore
-RUN dotnet build Nop.Plugin.Pickup.PickupInStore.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Shipping.EasyPost
-RUN dotnet build Nop.Plugin.Shipping.EasyPost.csproj -c Release
 WORKDIR /src/Plugins/Nop.Plugin.Shipping.FixedByWeightByTotal
 RUN dotnet build Nop.Plugin.Shipping.FixedByWeightByTotal.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Shipping.UPS
-RUN dotnet build Nop.Plugin.Shipping.UPS.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Tax.Avalara
-RUN dotnet build Nop.Plugin.Tax.Avalara.csproj -c Release
 WORKDIR /src/Plugins/Nop.Plugin.Tax.FixedOrByCountryStateZip
 RUN dotnet build Nop.Plugin.Tax.FixedOrByCountryStateZip.csproj -c Release
 WORKDIR /src/Plugins/Nop.Plugin.Widgets.AccessiBe
 RUN dotnet build Nop.Plugin.Widgets.AccessiBe.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Widgets.FacebookPixel
-RUN dotnet build Nop.Plugin.Widgets.FacebookPixel.csproj -c Release
 WORKDIR /src/Plugins/Nop.Plugin.Widgets.GoogleAnalytics
 RUN dotnet build Nop.Plugin.Widgets.GoogleAnalytics.csproj -c Release
 WORKDIR /src/Plugins/Nop.Plugin.Widgets.NivoSlider
 RUN dotnet build Nop.Plugin.Widgets.NivoSlider.csproj -c Release
-WORKDIR /src/Plugins/Nop.Plugin.Widgets.What3words
-RUN dotnet build Nop.Plugin.Widgets.What3words.csproj -c Release
+
+# build plugins - Added by Definit
+WORKDIR /src/Plugins/Nop.Plugin.Payments.NetsEasy
+RUN dotnet build Nop.Plugin.Payments.NetsEasy.csproj -c Release
+WORKDIR /src/Plugins/Nop.Plugin.Misc.SimpleCheckOut
+RUN dotnet build Nop.Plugin.Misc.SimpleCheckOut.csproj -c Release
 
 # publish project
 WORKDIR /src/Presentation/Nop.Web   
