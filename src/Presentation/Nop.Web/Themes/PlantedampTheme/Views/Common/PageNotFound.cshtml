@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.PageNotFound").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-not-found-page");
+}
+@section Breadcrumb
+    {
+    <div class="breadcrumb">
+        <div class="page-title">
+            <h1>@T("PageTitle.PageNotFound")</h1>
+
+        </div>
+    </div>
+}
+<div class="page not-found-page">
+    @*<div class="page-title">
+        <h1>@T("PageTitle.PageNotFound")</h1>
+    </div>*@
+    <div class="page-body">
+
+        <div class="container-fluid p-5">
+            @await Component.InvokeAsync("TopicBlock", new { systemName = "PageNotFound" })
+            
+            <p class="text-center"> <img src="~/Themes/ViridiTheme/Content/images/Page-not-found.jpg" /> </p>
+
+        </div>
+
+    </div>
+    </div>

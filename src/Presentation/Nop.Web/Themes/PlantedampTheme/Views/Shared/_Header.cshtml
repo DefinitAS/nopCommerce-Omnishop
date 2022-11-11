@@ -1,0 +1,30 @@
+﻿@inject Nop.Services.Plugins.IPluginService finder
+
+<div class="header-navbars" style="height:145px">
+
+    <div class="navbar navbar-expand-lg nav-top" style="max-width: 1300px;margin-left:auto;margin-right:auto;height:86px">
+        @await Component.InvokeAsync("Logo")
+        <div class="search-box flex-fill d-flex" >
+            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-label="Toggle navigation">
+                <span class="fa fa-bars"></span>
+            </button>
+            <div class="flex-fill">
+                @await Component.InvokeAsync("SearchBox")
+            </div>
+        </div>
+        @await Component.InvokeAsync("HeaderLinks")
+    </div>
+
+    <nav class="navbar navbar-expand-lg nav-bottom">
+        <ul class="navbar-nav ml-auto">
+            @await Component.InvokeAsync("TaxTypeSelector")
+            @await Component.InvokeAsync("CurrencySelector")
+            <li class="navigation-links collapse navbar-collapse" id="collapsibleNavbar">
+                @await Component.InvokeAsync("TopMenu")
+            </li>
+            @await Component.InvokeAsync("LanguageSelector")
+            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderSelectors })
+        </ul>
+    </nav>
+
+</div>

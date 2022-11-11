@@ -1,0 +1,38 @@
+﻿@model ShoppingCartModel
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.ShoppingCart").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-shopping-cart-page");
+}
+@*@if (!Model.OnePageCheckoutEnabled)
+{
+    @await Component.InvokeAsync("CheckoutProgress", new { step = CheckoutProgressStep.Cart })
+}*@
+@section Breadcrumb
+    {
+    <div class="breadcrumb">
+        <div class="page-title">
+            <h1>@T("ShoppingCart")</h1>
+        </div>
+    </div>
+    </div>
+}
+<div class="page shopping-cart-page">
+    <div class="custom-container-fluid container-fluid">
+        <div class="page-body">
+            @await Component.InvokeAsync("OrderSummary", new { overriddenModel = Model })
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.remove-button').on('click', function () {
+            $(this).siblings('label').click();
+            $('.update-cart-button').click()
+        })
+    });
+</script>

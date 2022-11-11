@@ -1,0 +1,51 @@
+﻿@{
+    Layout = "_Root.Head";
+}
+@using Nop.Services.Configuration
+@inject ISettingService settingService
+@{
+    var EnableFixedHeader = await settingService.GetSettingByKeyAsync<bool>("ViridiSettings.EnableFixedHeader");
+}
+
+<div class="d-flex flex-nowrap" style="height: 26px;font-size:10pt;font-family: 'Asap', sans-serif, 'Helvetica Neue', Helvetica, Arial, sans-serif; padding-top:8px;padding-right:8px;padding-left:8px">
+    <span><i class="far fa-smile-beam mx-2 text-warning"></i>Fri frakt over kr. 1 500,-</span>
+    <span class="d-none d-lg-block"><i class="fas fa-shipping-fast text-danger mx-2"></i> Hurtig levering.</span>
+    <span class="d-none d-sm-block"><i class="fas fa-cannabis mx-2"></i>Norsk selskap. Lager og kundeservice i Norge.</span>
+    <span class="ml-auto"><i class="fas fa-envelope"></i> post@plantedamp.no</span>
+</div>
+
+
+
+@await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.BodyStartHtmlTagAfter })
+
+@await Html.PartialAsync("_Notifications")
+@await Html.PartialAsync("_JavaScriptDisabledWarning")
+@await Html.PartialAsync("_OldInternetExplorerWarning")
+
+<div class="master-wrapper-page">
+    <div class="master-header   @(EnableFixedHeader ? "fixed-top" : "")">
+        @await Component.InvokeAsync("AdminHeaderLinks")
+        @await Html.PartialAsync("_Header")
+    </div>
+    <script asp-location="Footer">
+        var localized_data = {
+            AjaxCartFailure: "@T("AjaxCart.Failure")",
+        };
+        AjaxCart.init(false, '.header-links .cart-qty', '.header-links .wishlist-qty', '#flyout-cart', localized_data);
+    </script>
+    <div class="master-wrapper-content">
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ContentBefore })
+
+        @if (IsSectionDefined("Breadcrumb"))
+        {
+            @RenderSection("Breadcrumb")
+        }
+        <div class="master-column-wrapper">
+            @RenderBody()
+        </div>
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ContentAfter })
+    </div>
+    @await Component.InvokeAsync("Footer")
+</div>
+@await Component.InvokeAsync("EuCookieLaw")
+@await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.BodyEndHtmlTagBefore })
