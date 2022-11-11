@@ -1,0 +1,55 @@
+﻿@model ProductDetailsModel
+@{
+    NopHtml.AddScriptParts(ResourceLocation.Footer, "/lib/magnific-popup/jquery.magnific-popup.min.js");
+    NopHtml.AddCssFileParts("/lib/magnific-popup/magnific-popup.css", string.Empty);
+}
+<div class="gallery">
+    <div class="picture">
+        @await Component.InvokeAsync("Widget", new { widgetZone = "viridi_product_ribbon", additionalData = Model.Id })
+        @if (Model.DefaultPictureZoomEnabled)
+        {
+            <a href="@Model.DefaultPictureModel.FullSizeImageUrl" title="@Model.DefaultPictureModel.Title" id="main-product-img-lightbox-anchor-@Model.Id">
+                <img class="w-100" alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" itemprop="image" id="main-product-img-@Model.Id" />
+            </a>
+        }
+        else
+        {
+            <a href="@Model.DefaultPictureModel.FullSizeImageUrl"><img class="w-100" alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title" itemprop="image" id="main-product-img-@Model.Id" /></a>
+        }
+    </div>
+    @if (Model.PictureModels.Count > 1)
+    {
+        <div class="picture-thumbs owl-carousel mt-2" id="picture-thumbs">
+            @foreach (var picture in Model.PictureModels)
+            {
+                <div class="thumb-item">
+                    <img src="@picture.ThumbImageUrl" alt="@picture.AlternateText" title="@picture.Title" data-defaultsize="@picture.ImageUrl" data-fullsize="@picture.FullSizeImageUrl" />
+                </div>
+            }
+        </div>
+        <script asp-location="Footer">
+            $(document).ready(function () {
+                $('.thumb-item img').on('click', function () {
+                    $('#main-product-img-@Model.Id').attr('src', $(this).attr('data-defaultsize'));
+                    $('#main-product-img-@Model.Id').attr('title', $(this).attr('title'));
+                    $('#main-product-img-@Model.Id').attr('alt', $(this).attr('alt'));
+                    $('#main-product-img-lightbox-anchor-@Model.Id').attr('href', $(this).attr('data-fullsize'));
+                    $('.zoomple').attr('href', $(this).attr('data-fullsize'));
+                    $('#main-product-img-lightbox-anchor-@Model.Id').attr('title', $(this).attr('title'));
+                });
+            });
+        </script>
+    }
+</div>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $('.zoomple').zoomple({
+            bgColor: '#fff',
+            offset: { x: -150, y: -150 },
+            zoomWidth: 300,
+            zoomHeight: 300,
+            roundedCorners: true
+        });
+    });
+</script>

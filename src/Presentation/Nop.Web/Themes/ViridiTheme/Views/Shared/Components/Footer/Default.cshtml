@@ -1,0 +1,258 @@
+﻿@model FooterModel
+@using Nop.Core
+@using Nop.Core.Domain.Tax
+@using Nop.Services.Configuration
+@using Nop.Services.Media
+@inject IWorkContext workContext
+@inject ISettingService settingService
+@inject IPictureService pictureService
+<div class="footer">
+
+    <div class="newsletter-box">
+        <div class="row col-lg-pull-0 m-0">
+            <div class="col-10 col-7 col-lg-5 m-auto p-3 p-md-5">
+                @await Component.InvokeAsync("NewsletterBox")
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-container-fluid container-fluid">
+        @await Component.InvokeAsync("Widget", new { widgetZone = "viridi_before_footer_nav" })
+        <div class="footer-upper">
+            <div class="row">
+                <div class="col-lg-3">
+
+                    <div class="footer-block information mb-3">
+                        <div class="title" id="headingOne" data-toggle="collapse">
+                            <strong>@T("Footer.Information")</strong>
+                        </div>
+                        <div class="collapsible-links" id="footerinformation" aria-labelledby="headingOne">
+                            <ul class="list">
+                                @if (Model.SitemapEnabled && Model.DisplaySitemapFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("Sitemap")">@T("Sitemap")</a></li>
+                                }
+                                @foreach (var topic in Model.Topics.Where(x => x.IncludeInFooterColumn1).ToList())
+                                {
+                                    <li><a href="@Url.RouteUrl("Topic", new { SeName = topic.SeName })">@topic.Name</a></li>
+                                }
+                                @if (Model.DisplayContactUsFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("ContactUs")">@T("ContactUs")</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-3">
+                    <div class="footer-block customer-service mb-3">
+                        <div class="title" id="headingTwo" data-toggle="collapse">
+                            <strong>@T("Footer.CustomerService")</strong>
+                        </div>
+                        <div class="collapsible-links" id="customer-service" aria-labelledby="headingTwo">
+                            <ul class="list">
+                                @if (Model.DisplayProductSearchFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("ProductSearch")">@T("Search")</a> </li>
+                                }
+                                @if (Model.NewsEnabled && Model.DisplayNewsFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("NewsArchive")">@T("News")</a></li>
+                                }
+                                @if (Model.BlogEnabled && Model.DisplayBlogFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("Blog")">@T("Blog")</a></li>
+                                }
+                                @if (Model.ForumEnabled && Model.DisplayForumsFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("Boards")">@T("Forum.Forums")</a></li>
+                                }
+                                @if (Model.RecentlyViewedProductsEnabled && Model.DisplayRecentlyViewedProductsFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("RecentlyViewedProducts")">@T("Products.RecentlyViewedProducts")</a></li>
+                                }
+                                @if (Model.CompareProductsEnabled && Model.DisplayCompareProductsFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("CompareProducts")">@T("Products.Compare.List")</a></li>
+                                }
+                                @if (Model.NewProductsEnabled && Model.DisplayNewProductsFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("NewProducts")">@T("Products.NewProducts")</a></li>
+                                }
+                                @foreach (var topic in Model.Topics.Where(x => x.IncludeInFooterColumn2).ToList())
+                                {
+                                    <li><a href="@Url.RouteUrl("Topic", new {SeName = topic.SeName})">@topic.Name</a></li>
+                                }
+                                @if (Model.AllowCustomersToCheckGiftCardBalance)
+                                {
+                                    <li><a href="@Url.RouteUrl("CheckGiftCardBalance")">@T("CheckGiftCardBalance")</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="footer-block my-account mb-3">
+                        <div class="title" id="headingThree" data-toggle="collapse">
+                            <strong>@T("Footer.MyAccount")</strong>
+                        </div>
+                        <div class="collapsible-links" id="my-account-service" aria-labelledby="headingThree">
+                            <ul class="list">
+                                @if (Model.DisplayCustomerInfoFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("CustomerInfo")">@T("Account.MyAccount")</a></li>
+                                }
+                                @if (Model.DisplayCustomerOrdersFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("CustomerOrders")">@T("Account.CustomerOrders")</a></li>
+                                }
+                                @if (Model.DisplayCustomerAddressesFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("CustomerAddresses")">@T("Account.CustomerAddresses")</a></li>
+                                }
+                                @if (Model.ShoppingCartEnabled && Model.DisplayShoppingCartFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("ShoppingCart")">@T("ShoppingCart")</a></li>
+                                }
+                                @if (Model.WishlistEnabled && Model.DisplayWishlistFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("Wishlist")">@T("Wishlist")</a></li>
+                                }
+                                @if (Model.AllowCustomersToApplyForVendorAccount && Model.DisplayApplyVendorAccountFooterItem)
+                                {
+                                    <li><a href="@Url.RouteUrl("ApplyVendorAccount")">@T("Vendors.ApplyAccount")</a></li>
+                                }
+                                @foreach (var topic in Model.Topics.Where(x => x.IncludeInFooterColumn3).ToList())
+                                {
+                                    <li><a href="@Url.RouteUrl("Topic", new {SeName = topic.SeName})">@topic.Name</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="footer-block follow-us">
+                        <div class="social">
+                            <div class="title" id="headingFour" data-toggle="collapse">
+                                <strong>@T("Footer.FollowUs")</strong>
+                            </div>
+                            <div class="collapsible-links" id="follow-us-service" aria-labelledby="headingFour">
+                                @await Component.InvokeAsync("SocialButtons")
+                            </div>
+                            @{
+                                var showLogoAtPageFooter = await settingService.GetSettingByKeyAsync<bool>("ViridiSettings.ShowLogoAtPageFooter");
+                                if (showLogoAtPageFooter)
+                                {
+                                    var pictureId = await settingService.GetSettingByKeyAsync<int>("ViridiSettings.FooterLogoPictureId");
+                                    var pictureUrl = await pictureService.GetPictureUrlAsync(pictureId);
+                                    <div class="footer-logo-box"> <img src="@pictureUrl" /> </div>
+                                }
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.Footer })
+        @{
+            var divs = 1;
+            var footerEmail = await settingService.GetSettingByKeyAsync<string>("ViridiSettings.FooterEmail");
+            divs = !Model.HidePoweredByNopCommerce ? ++divs : divs;
+            divs = !string.IsNullOrWhiteSpace(footerEmail) ? ++divs : divs;
+            var col = 12 / divs;
+        }
+    </div>
+    <div class="footer-lower">
+        <div class="custom-container-fluid container-fluid">
+            <div class="row">
+                <div class="col-md-@col">
+                    <div class="footer-info text-center pb-2">
+                        <span class="footer-disclaimer">@T("Content.CopyrightNotice", DateTime.Now.Year, Model.StoreName)</span>
+                        @if (Model.DisplayTaxShippingInfoFooter)
+                        {
+                            var inclTax = await workContext.GetTaxDisplayTypeAsync() == TaxDisplayType.IncludingTax;
+                            <span class="footer-tax-shipping">
+                                @T(inclTax ? "Footer.TaxShipping.InclTax" : "Footer.TaxShipping.ExclTax", Url.RouteUrl("Topic", new { SeName = await Html.GetTopicSeNameAsync("shippinginfo") }))
+                            </span>
+                        }
+                    </div>
+                </div>
+                @if (!Model.HidePoweredByNopCommerce)
+                {
+                    <div class="col-md-@col">
+                        <div class="footer-powered-by text-center pb-2">
+                            @*Would you like to remove the "Powered by nopCommerce" link in the bottom of the footer?
+                                Please find more info at https://www.nopcommerce.com/copyrightremoval.aspx*@
+                            <span class="poweredby">Powered by</span> <a class="link" href="https://www.nopcommerce.com/">nopCommerce</a>
+                        </div>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(footerEmail))
+                {
+                    <div class="col-md-@col">
+                        <a class="d-block text-white text-center" href="mailto:@(footerEmail)"><i class="fa fa-envelope" aria-hidden="true"></i> @footerEmail</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @{
+            var showSupportedCardsPictureAtPageFooter = await settingService.GetSettingByKeyAsync<bool>("ViridiSettings.ShowSupportedCardsPictureAtPageFooter");
+            if (showSupportedCardsPictureAtPageFooter)
+            {
+                var pictureId = await settingService.GetSettingByKeyAsync<int>("ViridiSettings.SupportedCardsPictureId");
+                var pictureUrl = await pictureService.GetPictureUrlAsync(pictureId);
+                <div class="payment-cart-logo bg-white text-center p-2"> <img src="@pictureUrl" /> </div>
+            }
+        }
+        <a href="#" class="scrollup border-0"> <i class="fa fa-angle-double-up" aria-hidden="true"></i> </a>
+    </div>
+</div>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $('.footer-block .title').on('click', function () {
+            var e = window, a = 'inner';
+            if (!('innerWidth' in window)) {
+                a = 'client';
+                e = document.documentElement || document.body;
+            }
+            var result = { width: e[a + 'Width'], height: e[a + 'Height'] };
+            if (result.width < 992) {
+                $(this).siblings('.list').slideToggle('slow');
+            }
+
+        });
+
+        if ($(window).width() < 992) {
+            $('.footer .collapsible-links').addClass('collapse');
+            $('.footer [data-toggle="collapse"]').addClass('closed')
+            $('.footer [data-toggle="collapse"]').on('click', function () {
+                $(this).toggleClass('closed');
+                $(this).siblings('.collapse').collapse('toggle')
+            })
+        } else {
+            $('.footer [data-toggle="collapse"]').removeClass('closed')
+            $('.footer .collapsible-links').removeClass('collapse');
+        }
+
+
+        $(window).on('resize', function () {
+            if ($(window).width() < 992) {
+                $('.footer .collapsible-links').addClass('collapse');
+                $('.footer [data-toggle="collapse"]').addClass('closed')
+                $('.footer [data-toggle="collapse"]').on('click', function () {
+                    $(this).toggleClass('closed');
+                    $(this).siblings('.collapse').collapse('toggle')
+                })
+            } else {
+                $('.footer [data-toggle="collapse"]').removeClass('closed')
+                $('.footer .collapsible-links').removeClass('collapse');
+            }
+        })
+    });
+</script>
+<nop-antiforgery-token />

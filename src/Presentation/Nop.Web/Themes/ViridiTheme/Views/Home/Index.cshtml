@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "_ColumnsOne";
+
+    //page class
+    NopHtml.AppendPageCssClassParts("html-home-page");
+}
+<div class="page home-page">
+    <div class="page-body">
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageTop })
+        @*<div class="container-fluid homepage-topics-text">
+            @await Component.InvokeAsync("TopicBlock", new { systemName = "HomePageText" })
+        </div>*@
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforeCategories })
+        @*@await Component.InvokeAsync("HomepageCategories")*@
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforeProducts })
+        @*@await Component.InvokeAsync("HomepageProducts")*@
+        @await Component.InvokeAsync("TopicBlock", new { systemName = "homepagePromotionSlider" })
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforeBestSellers })
+        @await Component.InvokeAsync("HomepageBestSellers")
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforeNews })
+        @await Component.InvokeAsync("Widget", new { widgetZone = "viridi_homepage_news_blog" })
+        @*@await Component.InvokeAsync("HomepageNews")*@
+
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBeforePoll })
+        @*@await Component.InvokeAsync("HomepagePolls")*@
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageBottom })
+    </div>
+</div>

@@ -1,0 +1,25 @@
+﻿@model RegisterResultModel
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Register").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-registration-result-page");
+}
+<form asp-route="RegisterResult" asp-route-returnurl="@Context.Request.Query["ReturnUrl"]" method="post">
+    <div asp-validation-summary="ModelOnly" class="message-error"></div>
+    <div class="page registration-result-page">
+        <div class="page-title">
+            <h1>@T("Account.Register")</h1>
+        </div>
+        <div class="page-body">
+            <div class="result">
+                @Model.Result
+            </div>
+            <div class="pt-3 buttons text-center">
+                <a href="@Model.ReturnUrl" class="button-1 register-continue-button">@T("Account.Register.Result.Continue")</a>
+            </div>
+        </div>
+    </div>
+</form>

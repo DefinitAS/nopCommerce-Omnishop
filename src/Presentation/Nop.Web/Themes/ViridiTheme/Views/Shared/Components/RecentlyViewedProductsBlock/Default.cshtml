@@ -1,0 +1,29 @@
+﻿@model IList<ProductOverviewModel>
+@if (Model.Count > 0)
+{
+<div class="block block-recently-viewed-products">
+    <div class="title" id="headingFour">
+        <button class="btn btn-link btn-block collapsed" type="button" data-toggle="collapse" data-target="#recentProductNavigation" aria-expanded="true" aria-controls="collapseOne">
+            @T("Products.RecentlyViewedProducts")
+        </button>
+    </div>
+    <div class="listbox collapse" id="recentProductNavigation" aria-labelledby="headingFour">
+        <ul class="list recent-items-list pl-0">
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                var product = Model[i];
+                <li class="@(i == Model.Count - 1 ? "last media align-items-stretch" : "media align-items-stretch")">
+                    @if (!string.IsNullOrEmpty(product.DefaultPictureModel.ImageUrl))
+                    {
+                        <a class="product-picture mr-2" href="@Url.RouteUrl("Product", new { SeName = product.SeName })" title="@product.DefaultPictureModel.Title">
+                            <img class="img-thumbnail" alt="@product.DefaultPictureModel.AlternateText" src="@product.DefaultPictureModel.ImageUrl" title="@product.DefaultPictureModel.Title" />
+                        </a>
+                    }
+                       <a class="product-name media-body" href="@Url.RouteUrl("Product", new { SeName = product.SeName })">@product.Name</a>
+                    
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+}
