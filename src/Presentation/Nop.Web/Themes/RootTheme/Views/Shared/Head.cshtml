@@ -1,0 +1,20 @@
+﻿@using Nop.Core
+@using Nop.Services.Helpers
+@using Nop.Web.Framework.UI
+@inject IThemeContext themeContext
+@inject IUserAgentHelper userAgentHelper
+@{
+    Layout ="";
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    var supportRtl = await Html.ShouldUseRtlThemeAsync();
+
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/root-theme-styles.css");
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/slinky.min.css");
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/bootstrap.min.css");
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/bootstrap-grid.min.css");
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/bootstrap-reboot.min.css");
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/fontawesome-all.min.css");
+
+    //add jQuery UI css file
+    NopHtml.AppendCssFileParts("~/lib_npm/jquery-ui-dist/jquery-ui.min.css");
+}
