@@ -21,10 +21,8 @@ using Nop.Services.Orders;
 using Nop.Services.Payments;
 using Nop.Services.Security;
 using Nop.Services.Shipping;
-using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Factories;
 using Nop.Web.Framework.Controllers;
-using Nop.Web.Extensions;
 using Nop.Web.Framework.Mvc.Filters;
 
 namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
@@ -312,6 +310,7 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
                 processPaymentRequest.CustomerId = customer.Id;
                 processPaymentRequest.PaymentMethodSystemName = await _genericAttributeService.GetAttributeAsync<string>(customer, NopCustomerDefaults.SelectedPaymentMethodAttribute, store.Id);
                 HttpContext.Session.Set<ProcessPaymentRequest>("OrderPaymentInfo", processPaymentRequest);
+
                 var placeOrderResult = await _orderProcessingService.PlaceOrderAsync(processPaymentRequest);
                 if (placeOrderResult.Success)
                 {
@@ -320,12 +319,21 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
                     {
                         Order = placeOrderResult.PlacedOrder
                     };
-                    await _paymentService.PostProcessPaymentAsync(postProcessPaymentRequest);
 
-                    if (_webHelper.IsRequestBeingRedirected || _webHelper.IsPostBeingDone)
+                    try
                     {
-                        //redirection or POST has been done in PostProcessPayment
-                        return Content(await _localizationService.GetResourceAsync("Checkout.RedirectMessage"));
+                        await _paymentService.PostProcessPaymentAsync(postProcessPaymentRequest);
+                        if (_webHelper.IsRequestBeingRedirected || _webHelper.IsPostBeingDone)
+                        {
+                            //redirection or POST has been done in PostProcessPayment
+                            return Content(await _localizationService.GetResourceAsync("Checkout.RedirectMessage"));
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        await _orderProcessingService.ReOrderAsync(placeOrderResult.PlacedOrder);
+                        await _orderProcessingService.DeleteOrderAsync(placeOrderResult.PlacedOrder);
+                        throw;
                     }
 
                     return RedirectToRoute("CheckoutCompleted", new { orderId = placeOrderResult.PlacedOrder.Id });
