@@ -7,7 +7,6 @@
         currentCategoryId = Convert.ToInt32(Url.ActionContext.RouteData.Values["categoryId"].ToString());
     }
 
-
     //current manufacturer ID
     var currentManufacturerId = 0;
     if (Url.ActionContext.RouteData.Values["controller"].ToString().Equals("catalog", StringComparison.InvariantCultureIgnoreCase) &&
@@ -16,42 +15,37 @@
         currentManufacturerId = Convert.ToInt32(Url.ActionContext.RouteData.Values["manufacturerId"].ToString());
     }
 
-
     //current product ID
     var currentProductId = 0;
     if (Url.ActionContext.RouteData.Values["controller"].ToString().Equals("product", StringComparison.InvariantCultureIgnoreCase) &&
         Url.ActionContext.RouteData.Values["action"].ToString().Equals("productdetails", StringComparison.InvariantCultureIgnoreCase))
     {
         currentProductId = Convert.ToInt32(Url.ActionContext.RouteData.Values["productId"].ToString());
-    } }
-    @await RenderSectionAsync("Breadcrumb", false)
+    } 
+}
+@await RenderSectionAsync("Breadcrumb", false)
 <div class="container-fluid container-lg">
     <div class="row">
-        <div class="col-md-4 col-lg-3">
-
-            <div class="title mobile-filter-view" id="headingFilter">
-                <button class="btn btn-link btn-block collapsed" type="button" data-toggle="collapse" data-target="#mobile-filter-content" aria-expanded="false" aria-controls="headingFilter"> Filters  </button>
+        <div class="col-md-4 col-lg-3 d-none d-md-block">
+            <div class="side-2 bg-white accordion" id="sidebar">
+                @if (IsSectionDefined("left")) 
+                { 
+                    @RenderSection("left") 
+                }
+                else
+                {
+                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.LeftSideColumnBefore })
+                    @await RenderSectionAsync("CatalogFilters", false);
+                    @await Component.InvokeAsync("CategoryNavigation", new { currentCategoryId = currentCategoryId, currentProductId = currentProductId })
+                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.LeftSideColumnAfterCategoryNavigation })
+                    @await Component.InvokeAsync("ManufacturerNavigation", new { currentManufacturerId = currentManufacturerId })
+                    @await Component.InvokeAsync("VendorNavigation")
+                    @await Component.InvokeAsync("RecentlyViewedProductsBlock", new { productThumbPictureSize = 64 })
+                    @await Component.InvokeAsync("PopularProductTags")
+                    @await Component.InvokeAsync("PollBlock", new { systemKeyword = "LeftColumnPoll" })                                                                                                                                
+                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.LeftSideColumnAfter })
+                }
             </div>
-            <div class="listbox collapse show" id="mobile-filter-content" aria-labelledby="headingFilter">
-                <div class="side-2 bg-white accordion" id="sidebar">
-                    @if (IsSectionDefined("left"))
-                    {
-                @RenderSection("left") }
-                            else
-                            {
-                @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.LeftSideColumnBefore })
-                @await RenderSectionAsync("CatalogFilters", false);
-                @await Component.InvokeAsync("CategoryNavigation", new { currentCategoryId = currentCategoryId, currentProductId = currentProductId })
-                @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.LeftSideColumnAfterCategoryNavigation })
-                @await Component.InvokeAsync("ManufacturerNavigation", new { currentManufacturerId = currentManufacturerId })
-                @await Component.InvokeAsync("VendorNavigation")
-                @await Component.InvokeAsync("RecentlyViewedProductsBlock", new { productThumbPictureSize = 64 })
-                @await Component.InvokeAsync("PopularProductTags")
-                @await Component.InvokeAsync("PollBlock", new { systemKeyword = "LeftColumnPoll" })
-                                                                                                                                @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.LeftSideColumnAfter })}
-                </div>
-            </div>
-
         </div>
         <div class="col-md-8 col-lg-9">
             <div class="center-2">

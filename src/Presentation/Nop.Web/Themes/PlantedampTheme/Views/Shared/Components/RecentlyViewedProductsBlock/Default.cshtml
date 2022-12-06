@@ -3,11 +3,11 @@
 {
 <div class="block block-recently-viewed-products">
     <div class="title" id="headingFour">
-        <button class="btn btn-link btn-block collapsed" type="button" data-toggle="collapse" data-target="#recentProductNavigation" aria-expanded="true" aria-controls="collapseOne">
+        <button class="btn btn-link btn-block expanded" type="button" data-toggle="collapse" data-target="#recentProductNavigation" aria-expanded="true" aria-controls="collapseOne">
             @T("Products.RecentlyViewedProducts")
         </button>
     </div>
-    <div class="listbox collapse" id="recentProductNavigation" aria-labelledby="headingFour">
+    <div class="listbox collapse show" id="recentProductNavigation" aria-labelledby="headingFour">
         <ul class="list recent-items-list pl-0">
             @for (var i = 0; i < Model.Count; i++)
             {
