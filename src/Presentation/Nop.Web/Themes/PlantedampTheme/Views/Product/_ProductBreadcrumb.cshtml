@@ -7,11 +7,6 @@
 @if (Model.Enabled)
 {
 <div class="breadcrumb">
-    <div class="page-title">
-        <h1 itemprop="title">
-            @Model.ProductName
-        </h1>
-    </div>
     <ul itemscope itemtype="http://schema.org/BreadcrumbList">
         @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductBreadcrumbBefore, additionalData = Model })
         <li>
@@ -35,14 +30,19 @@
             position++;
         }
 
-        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+@*        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
             <strong class="current-item" itemprop="name">@Model.ProductName</strong>
             <span itemprop="item" itemscope itemtype="http://schema.org/Thing"
                   id="@Url.RouteUrl("Product", new { SeName = Model.ProductSeName })">
             </span>
             <meta itemprop="position" content="@position" />
             @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductBreadcrumbAfter, additionalData = Model })
-        </li>
+        </li>*@
     </ul>
+    <div class="page-title">
+        <h1 itemprop="title">
+            @Model.ProductName
+        </h1>
+    </div>
 </div>
 }
