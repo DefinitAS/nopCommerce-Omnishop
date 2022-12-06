@@ -58,8 +58,8 @@
 
     .navbar.nav-bottom .navbar-nav,
     .navbar.nav-bottom::before {
-      background: #333;
-      z-index: 1000;
+/*      background: #333;
+*/      z-index: 1000;
     }
 
     .homepagePromotionSlider .owl-item .promotion-carousel-caption .shopbutton {
@@ -109,7 +109,7 @@
     }
 
     .sublist-toggle::before {
-      background: #222 !important;
+/*      background: #222 !important;*/
     }
 
     .product-viewmode {
@@ -156,62 +156,19 @@
       }
 
       .navbar .navbar-nav .navigation-links .top-menu .nav-products:hover a {
-        color: #000;
-        background: #fff;
+/*        color: #000;
+        background: #fff;*/
       }
 
         .navbar .navbar-nav .navigation-links .top-menu .nav-products:hover a:hover {
-          color: #000;
-          background: #ddd;
+/*          color: #000;
+          background: #ddd;*/
         }
 
       .navbar .navbar-nav .navigation-links .top-menu .nav-products:hover .sublist {
-        width: 100%;
-        margin-left: 0 !important;
-        background: #ddd;
-        color: #333;
         z-index: 1;
       }
     /*start css for default menu*/
-
-    /*starts homepage top main banner slider*/
-    .anywhere-slider-1 .slider-caption {
-      width: 100% !important;
-    }
-
-    .anywhere-slider-container .slider-caption h2 {
-      font-size: 30px !important;
-    }
-
-    .anywhere-slider-1 .owl-item:nth-child(even) .slider-caption {
-      left: 0 !important;
-    }
-
-    .anywhere-slider-1 .slider-caption h3 {
-      font-size: 18px !important;
-    }
-
-    .anywhere-slider-container {
-      margin-top: 21px;
-    }
-
-      .anywhere-slider-container .slider-caption h2 {
-        font-size: 28px;
-      }
-
-      .anywhere-slider-container .slider-caption h3 {
-        font-size: 18px;
-        margin-bottom: 5px;
-      }
-
-      .anywhere-slider-container .slider-caption .slider-btn::before {
-        margin-top: 15px;
-      }
-
-      .anywhere-slider-container .owl-dots {
-        display: none;
-      }
-
     .footer-logo-box {
       padding-top: 20px;
     }

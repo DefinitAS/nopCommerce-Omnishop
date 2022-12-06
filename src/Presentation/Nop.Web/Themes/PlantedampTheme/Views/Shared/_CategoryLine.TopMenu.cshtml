@@ -1,11 +1,23 @@
 ﻿@model TopMenuModel.CategoryLineModel
 <li class="nav-products nav-item">
-    <a class="btn btn-link @(@Model.Category.HaveSubCategories ? "dropdown-toggle" : "")" href="@Url.RouteUrl("Category", new { SeName = Model.Category.SeName })">@Model.Category.Name
-    @if (Model.Category.NumberOfProducts.HasValue)
+    @if(Model.Category.HaveSubCategories) 
     {
-        <text> </text>@T("Categories.TotalProducts", Model.Category.NumberOfProducts.Value)
+        <a class="btn btn-link dropdown-toggle" style="text-align:left">@Model.Category.Name
+        @if (Model.Category.NumberOfProducts.HasValue)
+        {
+            <text> </text>@T("Categories.TotalProducts", Model.Category.NumberOfProducts.Value)
+        }
+        </a>
+    } 
+    else
+    {
+        <a class="btn btn-link"  style="text-align:left" href="@Url.RouteUrl("Category", new { SeName = Model.Category.SeName })">@Model.Category.Name
+        @if (Model.Category.NumberOfProducts.HasValue)
+        {
+            <text> </text>@T("Categories.TotalProducts", Model.Category.NumberOfProducts.Value)
+        }
+        </a>        
     }
-    </a>
     @{
         //subcategories
         var subCategories = Model.ResponsiveMobileMenu ?
@@ -21,9 +33,7 @@
         }
         if (subCategories.Count > 0)
         {
-
-            <div class="sublist-toggle"></div>
-            <ul class="sublist @levelClass list-unstyled m-0 ml-2">
+            <ul class="sublist @levelClass list-unstyled">
                 @foreach (var subCategory in subCategories)
                 {
                     var categoryLineModel = new TopMenuModel.CategoryLineModel
