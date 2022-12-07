@@ -32,6 +32,9 @@
         @await Html.PartialAsync("_ExternalAuthentication.Errors")
         <div class="page-body">
             <div class="customer-blocks">
+                <div class=" my-4 text-center">
+                    @await Component.InvokeAsync("TopicBlock", new { systemName = "LoginRegistrationInfo" })
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         @if (Model.CheckoutAsGuest)
@@ -118,9 +121,6 @@
                 </div>
                 <div class="external-authentication">
                     @await Component.InvokeAsync("ExternalMethods", "ExternalAuthentication")
-                </div>
-                <div class=" my-4 text-center">
-                    @await Component.InvokeAsync("TopicBlock", new { systemName = "LoginRegistrationInfo" })
                 </div>
             </div>
         </div>
