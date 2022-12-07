@@ -35,7 +35,7 @@
 }
 
 
-  @media (max-width: 991px) {
+  @media (max-width: 990px) {
 
     .bs-quick-view {
       display: none;
@@ -143,6 +143,10 @@
     .navbar .navbar-nav .navigation-links,
     .navbar .navbar-nav .navigation-links .top-menu .nav-products {
       width: 100%;
+    }
+
+    nav.navbar {
+      margin-top:44px;
     }
 
       .navbar .navbar-nav .navigation-links .top-menu.default-menu-web {
