@@ -158,19 +158,15 @@
 
         @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.Footer })
         @{
-            var divs = 1;
             var footerEmail = await settingService.GetSettingByKeyAsync<string>("ViridiSettings.FooterEmail");
-            divs = !Model.HidePoweredByNopCommerce ? ++divs : divs;
-            divs = !string.IsNullOrWhiteSpace(footerEmail) ? ++divs : divs;
-            var col = 12 / divs;
         }
     </div>
     <div class="footer-lower">
         <div class="custom-container-fluid container-fluid">
             <div class="row">
-                <div class="col-md-@col">
                     <div class="footer-info text-center pb-2">
                         <span class="footer-disclaimer">@T("Content.CopyrightNotice", DateTime.Now.Year, Model.StoreName)</span>
+                        <span class="poweredby">Design and development by</span> <a class="link" href="https://www.definit.no/" target="_blank">Definit AS</a>
                         @if (Model.DisplayTaxShippingInfoFooter)
                         {
                             var inclTax = await workContext.GetTaxDisplayTypeAsync() == TaxDisplayType.IncludingTax;
@@ -179,22 +175,18 @@
                             </span>
                         }
                     </div>
-                </div>
                 @if (!Model.HidePoweredByNopCommerce)
                 {
-                    <div class="col-md-@col">
+                    <span>&nbsp;&nbsp;&nbsp;</span>
                         <div class="footer-powered-by text-center pb-2">
                             @*Would you like to remove the "Powered by nopCommerce" link in the bottom of the footer?
                                 Please find more info at https://www.nopcommerce.com/copyrightremoval.aspx*@
                             <span class="poweredby">Powered by</span> <a class="link" href="https://www.nopcommerce.com/">nopCommerce</a>
                         </div>
-                    </div>
                 }
                 @if (!string.IsNullOrWhiteSpace(footerEmail))
                 {
-                    <div class="col-md-@col">
                         <a class="d-block text-white text-center" href="mailto:@(footerEmail)"><i class="fa fa-envelope" aria-hidden="true"></i> @footerEmail</a>
-                    </div>
                 }
             </div>
         </div>
@@ -205,7 +197,7 @@
             {
                 var pictureId = await settingService.GetSettingByKeyAsync<int>("ViridiSettings.SupportedCardsPictureId");
                 var pictureUrl = await pictureService.GetPictureUrlAsync(pictureId);
-                <div class="payment-cart-logo bg-white text-center p-2"> <img src="@pictureUrl" /> </div>
+                            <div class="payment-cart-logo bg-white text-center p-2"> <img src="@pictureUrl" /> </div>
             }
         }
         <a href="#" class="scrollup border-0"> <i class="fa fa-angle-double-up" aria-hidden="true"></i> </a>
