@@ -625,7 +625,8 @@ body {
   .product-grid .item-box .product-title a {
     color: #212121;
     display: inline-block;
-    white-space: nowrap;
+    line-height: 1em;
+    height: 2em;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
