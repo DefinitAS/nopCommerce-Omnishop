@@ -6,6 +6,7 @@
 @inject IWorkContext workContext
 @inject ISettingService settingService
 @inject IPictureService pictureService
+@inject IThemeContext themeContext
 <div class="footer">
 
 @*    <div class="newsletter-box">
@@ -131,28 +132,21 @@
                         </div>
                     </div>
                 </div>
-@*                <div class="col-lg-3">
+                <div class="col-lg-3">
                     <div class="footer-block follow-us">
                         <div class="social">
-                            <div class="title" id="headingFour" data-toggle="collapse">
-                                <strong>@T("Footer.FollowUs")</strong>
+                            <div class="title" >
+                                <strong>Vi aksepterer</strong>
                             </div>
-                            <div class="collapsible-links" id="follow-us-service" aria-labelledby="headingFour">
-                                @await Component.InvokeAsync("SocialButtons")
-                            </div>
-                            @{
-                                var showLogoAtPageFooter = await settingService.GetSettingByKeyAsync<bool>("ViridiSettings.ShowLogoAtPageFooter");
-                                if (showLogoAtPageFooter)
-                                {
-                                    var pictureId = await settingService.GetSettingByKeyAsync<int>("ViridiSettings.FooterLogoPictureId");
-                                    var pictureUrl = await pictureService.GetPictureUrlAsync(pictureId);
-                                    <div class="footer-logo-box"> <img src="@pictureUrl" /> </div>
-                                }
+                            @{ 
+                                var themeName = await themeContext.GetWorkingThemeNameAsync();
                             }
+                            <img style="background-color:#eee;padding:6px;height:40px;width:60px" src="/themes/@themeName/content/images/visa.svg" />
+                            <img style="background-color:#eee;padding:4px;height:40px;width:60px" src="/themes/@themeName/content/images/mastercard.svg" />
                         </div>
 
                     </div>
-                </div>*@
+                </div>
             </div>
         </div>
 
@@ -197,7 +191,7 @@
             {
                 var pictureId = await settingService.GetSettingByKeyAsync<int>("ViridiSettings.SupportedCardsPictureId");
                 var pictureUrl = await pictureService.GetPictureUrlAsync(pictureId);
-                            <div class="payment-cart-logo bg-white text-center p-2"> <img src="@pictureUrl" /> </div>
+                                            <div class="payment-cart-logo bg-white text-center p-2"> <img src="@pictureUrl" /> </div>
             }
         }
         <a href="#" class="scrollup border-0"> <i class="fa fa-angle-double-up" aria-hidden="true"></i> </a>
