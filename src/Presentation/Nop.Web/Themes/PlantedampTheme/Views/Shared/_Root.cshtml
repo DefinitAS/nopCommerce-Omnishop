@@ -11,7 +11,7 @@
     <span><i class="far fa-smile-beam mx-2 text-warning"></i>Fri frakt over kr. 1 500,-</span>
     <span class="d-none d-lg-block"><i class="fas fa-shipping-fast text-danger mx-2"></i> Hurtig levering.</span>
     <span class="d-none d-sm-block"><i class="fas fa-thumbs-up mx-2"></i>Norsk selskap. Lager og kundeservice i Norge.</span>
-    <span class="ml-auto"><i class="fas fa-envelope"></i> post@plantedamp.no</span>
+    <a  href="@Url.RouteUrl("ContactUs")" class="ml-auto"><i class="fas fa-phone"></i> <i class="fas fa-envelope"></i>&nbsp;Kontakt oss</a>
 </div>
 
 @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.BodyStartHtmlTagAfter })
