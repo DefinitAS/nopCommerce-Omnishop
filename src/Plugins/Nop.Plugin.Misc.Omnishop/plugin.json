@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Misc",
+  "FriendlyName": "Omnishop Integration",
+  "SystemName": "Misc.Omnishop",
+  "Version": "1.0",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Definit AS",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.Omnishop.dll",
+  "Description": "Integration between nopCommerce and Omnishop"
+}
