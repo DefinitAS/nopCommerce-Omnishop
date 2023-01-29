@@ -1,8 +1,48 @@
-﻿@{
+﻿@model Nop.Plugin.Misc.Omnishop.Models.ConfigurationModel
+@{
     Layout = "_ConfigurePlugin";
 }
 
+<form asp-controller="OmnishopPluginConfiguration" asp-action="Configure" method="post">
+    <div class="cards-group">
 
-<h1>Simplified checkout</h1>
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="ForceCanonicalUrl" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="ForceCanonicalUrl" />
+                        <span asp-validation-for="ForceCanonicalUrl"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <nop-label asp-for="ProductImportApiKey" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="ProductImportApiKey" />
+                        <span asp-validation-for="ProductImportApiKey"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-md-9 offset-md-3">
+                        <button type="submit" name="save" class="btn btn-primary">@T("Admin.Common.Save")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
