@@ -54,6 +54,8 @@
         @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsTop, additionalData = Model })
         <form asp-route="Product" asp-route-sename="@Model.SeName" method="post" id="product-details-form">
             <div itemscope itemtype="http://schema.org/Product" data-productid="@Model.Id">
+                <link itemprop="image" href="@Model.DefaultPictureModel.ImageUrl" />
+
                 <div class="product-essential row">
                     <div class="col-md-5">
                         @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsBeforePictures, additionalData = Model })
@@ -65,9 +67,7 @@
                             <div class="overview">
                                 @await Html.PartialAsync("_Discontinued", Model)
                                 <div class="product-name">
-                                    <h1 itemprop="name">
-                                        @Model.Name
-                                    </h1>
+                                    <h1 itemprop="name">@Model.Name</h1>
                                 </div>
                                 @if (!string.IsNullOrEmpty(Model.ShortDescription))
                                 {
@@ -101,6 +101,10 @@
                             @await Html.PartialAsync("_RentalInfo", Model, dataDictRental) }
                                 <!--price & add to cart-->
                                 @{ 
+                                    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                        <meta itemprop="priceCurrency" content="@Model.ProductPrice.CurrencyCode" />
+                                        <meta itemprop="price" content='@(Model.ProductPrice.PriceValue.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US")))'/>
+                                    </div>
                                     var dataDictPrice = new ViewDataDictionary(ViewData);
                                                 dataDictPrice.TemplateInfo.HtmlFieldPrefix = $"price_{Model.Id}";
                                     @await Html.PartialAsync("_ProductPrice", Model.ProductPrice, dataDictPrice)
@@ -115,7 +119,7 @@
                                     @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsBefore, additionalData = Model })
                                     @{ var dataDictAddToWishlist = new ViewDataDictionary(ViewData);
                                         dataDictAddToWishlist.TemplateInfo.HtmlFieldPrefix = $"addtocart_{Model.Id}";
-                                @await Html.PartialAsync("_AddToWishlist", Model.AddToCart, dataDictAddToWishlist) }
+                                    @await Html.PartialAsync("_AddToWishlist", Model.AddToCart, dataDictAddToWishlist) }
                                     @await Html.PartialAsync("_CompareProductsButton", Model)
                                     @await Html.PartialAsync("_ProductEmailAFriendButton", Model)
                                     @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsInsideOverviewButtonsAfter, additionalData = Model })
