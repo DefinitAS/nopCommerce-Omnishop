@@ -1,0 +1,389 @@
+﻿@inherits Nop.Web.Framework.Mvc.Razor.NopRazorPage<TModel>
+@inject Nop.Services.Common.IGenericAttributeService genericAttributeService
+@inject IWorkContext workContext
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Nop.Web.Framework
+
+@using System.Text.Encodings.Web
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Microsoft.AspNetCore.Routing
+@using Nop.Core
+@using Nop.Core.Domain.Common
+@using Nop.Core.Infrastructure
+@using Nop.Services.Events
+@using Nop.Web
+@using Nop.Web.Framework
+@using Nop.Web.Framework.Models
+@using Nop.Web.Framework.Events
+@using Nop.Web.Framework.Extensions
+@using Nop.Web.Framework.Infrastructure
+@using Nop.Web.Framework.Models.DataTables
+@using Nop.Web.Framework.Security.Captcha
+@using Nop.Web.Framework.Security.Honeypot
+@using Nop.Web.Framework.Themes
+@using Nop.Web.Framework.UI
+@using Nop.Plugin.Misc.Omnishop.Models
+@using Nop.Core.Domain.Catalog;
+
+@model PublishProductsSearchModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = T("Admin.Catalog.Products").Text + " - Publish";
+    //Html.SetActiveMenuItemSystemName("CustomProductList");
+}
+
+<form name="custom_form" asp-controller="PublishProducts" asp-action="List" method="post">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Admin.Catalog.Products") - Publish
+        </h1>
+        <div style="width:100%">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary">
+                    <i class="fa fa-users"></i>
+                    @T("Plugins.Misc.Omnishop.PublishProducts.List.Publish")
+                </button>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">&nbsp;</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <button type="button" id="publish-selected">
+                            <i class="fa fa-check"></i>
+                            @T("Plugins.Misc.Omnishop.PublishProducts.List.PublishSelected")
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" id="unpublish-selected">
+                            <i class="fa fa-undo"></i>
+                            @T("Plugins.Misc.Omnishop.PublishProducts.List.UnPublishSelected")
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="btn-group float-right">
+                <button type="button" class="btn btn-success" id="import-omnishop-products">
+                <i class="fa fa-download"></i>
+                    Oppdater data fra Omnishop
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default panel-search">
+                    <div class="panel-body">
+                            <div class="search-body ">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchProductName" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchProductName" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row" @(Model.AvailableCategories.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchCategoryId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchCategoryId" asp-items="Model.AvailableCategories" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row" @(Model.AvailableCategories.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchIncludeSubCategories" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchIncludeSubCategories" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row" @(Model.AvailableManufacturers.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchManufacturerId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchManufacturerId" asp-items="Model.AvailableManufacturers" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row" @(Model.AvailableVendors.SelectionIsNotPossible() || Model.IsLoggedInAsVendor ? Html.Raw("style='display: none;'") : null)>
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchVendorId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchVendorId" asp-items="Model.AvailableVendors" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchHasShortDescriptionId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchHasShortDescriptionId" asp-items="Model.AvailableHasShortDescriptionOptions" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchHasLongDescriptionId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchHasLongDescriptionId" asp-items="Model.AvailableHasFullDescriptionOptions" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="form-group row" @(Model.AvailableWarehouses.SelectionIsNotPossible() ? Html.Raw("style=\"display:none\"") : null)>
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchWarehouseId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchWarehouseId" asp-items="Model.AvailableWarehouses" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchProductTypeId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchProductTypeId" asp-items="Model.AvailableProductTypes" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchPublishedId" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchPublishedId" asp-items="Model.AvailablePublishedOptions" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchHasImagesId"  title="test" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="SearchHasImagesId" asp-items="Model.AvailableHasImagesOptions" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchHasPriceId" />
+                                            </div>
+                                            <div class="col-md-8 row">
+                                                <nop-select asp-for="SearchHasPriceId" asp-items="Model.AvailableHasPriceOptions" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchHasInventoryId" />
+                                            </div>
+                                            <div class="col-md-8 row">
+                                                <nop-select asp-for="SearchHasInventoryId" asp-items="Model.AvailableHasInventoryOptions" />
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="text-center col-12">
+                                        <button type="button" id="search-products" class="btn btn-primary btn-search">
+                                            <i class="fas fa-search"></i>
+                                            @T("Admin.Common.Search")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                    @{
+                        var dateRenderer=new RenderDate();
+                        dateRenderer.Format = "DD.MM.yyyy HH:mm";
+                    }
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                   {
+                       Name = "products-grid",
+                       UrlRead = new DataUrl("ProductList", "PublishProducts", null),
+                       SearchButtonId = "search-products",
+                       Length = Model.PageSize,
+                       LengthMenu = Model.AvailablePageSizes,
+                       Ordering = true,
+                       Filters = new List<FilterParameter>
+                            {
+                                new FilterParameter(nameof(Model.SearchHasImagesId)),
+                                new FilterParameter(nameof(Model.SearchHasLongDescriptionId)),
+                                new FilterParameter(nameof(Model.SearchHasShortDescriptionId)),
+                                new FilterParameter(nameof(Model.SearchHasPriceId)),
+                                new FilterParameter(nameof(Model.SearchHasInventoryId)),
+                                new FilterParameter(nameof(Model.SearchCategoryId)),
+                                new FilterParameter(nameof(Model.SearchIncludeSubCategories), typeof(bool)),
+                                new FilterParameter(nameof(Model.SearchManufacturerId)),
+                                new FilterParameter(nameof(Model.SearchProductName)),
+                                new FilterParameter(nameof(Model.SearchProductTypeId)),
+                                new FilterParameter(nameof(Model.SearchPublishedId)),
+                                new FilterParameter(nameof(Model.SearchWarehouseId)),
+                            },
+                       ColumnCollection = new List<ColumnProperty>
+                            {
+                           new ColumnProperty(nameof(CustomProductModel.Id))
+                                {
+                                    IsMasterCheckBox = true,
+                                    Render = new RenderCheckBox("checkbox_products"),
+                                    ClassName =  NopColumnClassDefaults.CenterAll,
+                                    Width = "50"
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.PictureThumbnailUrl))
+                                {
+                                    Title = T("Admin.Catalog.Products.Fields.PictureThumbnailUrl").Text,
+                                    Width = "100",
+                                    Render = new RenderPicture()
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.Name))
+                                {
+                                    Title = T("Admin.Catalog.Products.Fields.Name").Text,
+                                    Width = "300"
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.Sku))
+                                {
+                                    Title = T("Admin.Catalog.Products.Fields.Sku").Text,
+                                    Width = "100"
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.Price))
+                                {
+                                    Title = T("Admin.Catalog.Products.Fields.Price").Text,
+                                    Width = "150",
+                                    Render = new RenderCustom("renderColumnPrice")
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.StockQuantityStr))
+                                {
+                                    Title = T("Admin.Catalog.Products.Fields.StockQuantity").Text,
+                                    Width = "100"
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.ShortDescription))
+                                {
+                                    Title = T("Admin.Catalog.Products.Fields.ShortDescription").Text,
+                                    Width = "100"
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.FullDescription))
+                                {
+                                    Title = T("Admin.Catalog.Products.Fields.FullDescription").Text,
+                                    Width = "100"
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.UpdatedDate))
+                                {
+                                    Title = T("Plugins.Misc.Omnishop.PublishProducts.List.UpdatedDate").Text,
+                                    Width = "100",                                    
+                                    Render = dateRenderer
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.Published))
+                                {
+                                    Title = T("Admin.Catalog.Products.Fields.Published").Text,
+                                    Width = "100",
+                                    ClassName = NopColumnClassDefaults.CenterAll,
+                                    Render = new RenderBoolean()
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.Id))
+                                {
+                                    Title = T("Admin.Common.Edit").Text,
+                                    Width = "100",
+                                    ClassName =  NopColumnClassDefaults.Button,
+                                    Render = new RenderButtonCustom("btn btn-default", T("Admin.Common.Edit").Text)
+                                    {
+                                        OnClickFunctionName="openEditProduct"
+                                    }
+                                },
+                            }
+                   })
+
+                        <script>
+                            function openEditProduct(data, type, row, meta) {
+                                window.open("Edit/" + data, "_blank");
+                            }
+
+                            function renderColumnPrice(data, type, row, meta) {
+                                return (row.ProductTypeId != @((int)ProductType.GroupedProduct) ) ? data : null;
+                            }
+
+                            $(document).ready(function () {
+
+                                $('#import-omnishop-products').bind('click', function () {    
+                                    var postData = {
+                                    };                                    
+                                    addAntiForgeryToken(postData);
+                                    $.ajax({
+                                        cache: false,
+                                        type: "POST",
+                                        url: "@(Url.Action("ImportFromOmnishop", "PublishProducts"))",
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            alert('Operation failed\n' + textStatus + '\n' + errorThrown);
+                                        },
+                                        complete: function (jqXHR, textStatus) {
+                                            alert(jqXHR.responseJSON.Message);
+                                            updateTable('#products-grid');
+                                        }
+                                    });
+                                    return true;
+                                });
+
+                                $('#publish-selected').bind('click', function () {
+                                    var postData = {
+                                        selectedIds: selectedIds
+                                    };
+                                    addAntiForgeryToken(postData);
+                                    $.ajax({
+                                        cache: false,
+                                        type: "POST",
+                                        url: "@(Url.Action("PublishSelected", "PublishProducts"))",
+                                        data: postData,
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            alert('Operation failed\n' + textStatus + '\n' + errorThrown);
+                                        },
+                                        complete: function (jqXHR, textStatus) {
+                                            alert(jqXHR.responseJSON.Message);
+                                            updateTable('#products-grid');
+                                        }
+                                    });
+                                    return true;
+                                });
+
+                                $('#unpublish-selected').bind('click', function () {
+                                    var postData = {
+                                        selectedIds: selectedIds
+                                    };
+                                    addAntiForgeryToken(postData);
+                                    $.ajax({
+                                        cache: false,
+                                        type: "POST",
+                                        url: "@(Url.Action("UnpublishSelected", "PublishProducts"))",
+                                        data: postData,
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            alert('Operation failed\n' + textStatus + '\n' + errorThrown);
+                                        },
+                                        complete: function (jqXHR, textStatus) {
+                                            alert(jqXHR.responseJSON.Message);
+                                            updateTable('#products-grid');
+                                        }                                    
+                                    });
+                                    return true;
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</form>
+
