@@ -237,7 +237,7 @@
 
                 </div>
                 <div class="col-md-4 cart-footer">
-                    <div class="cart-options">
+@*                    <div class="cart-options">
                         @if (Model.IsEditable)
                         {
                             <button class="cart-option-header" type="button" data-toggle="collapse" data-target="#gift-wrapping" aria-expanded="true" aria-controls="gift-wrapping">
@@ -249,7 +249,7 @@
                                 </div>
                             </div>
                         }
-                    </div>
+                    </div>*@
 
                     <div class="cart-footers">
                         @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.OrderSummaryCartFooter })
@@ -273,21 +273,9 @@
                             </div>
 
                             <div class="cart-options">
-
+                                <span>Tester Hester!</span>
                                 @await Component.InvokeAsync("ShoppingCartEstimateShipping")
-                                @*<button class="cart-option-header" type="button" data-toggle="collapse" data-target="#estimate-shipping" aria-expanded="true" aria-controls="estimate-shipping">
-                                    @T("ShoppingCart.EstimateShipping")
-                                </button>
-                                <div id="estimate-shipping" class="cart-coupon-code collapse collapsed">
-
-                                    <div class="cart-collaterals card-body">
-                                        <div class="estimate-shipping-box pb-2">
-                                            @await Component.InvokeAsync("ShoppingCartEstimateShipping")
-                                        </div>
-                                    </div>
-                                </div>*@
                             </div>
-
 
                         }
                         <div class="confurm-order-box">

@@ -21,7 +21,7 @@
             <li class="nav-item">
                 <a href="@Url.RouteUrl("Login")"  class="nav-link">
                     <div class="icon-user "></div>
-                    <div >@T("Account.Login")</div>
+                    <div class="d-none d-sm-block">@T("Account.Login")</div>
                 </a>
             </li>
         }
@@ -40,7 +40,7 @@
                 <a href="@Url.RouteUrl("Wishlist")" class="nav-link" >
                     <span class="wishlist-label icon-heart">@T("Wishlist")</span>
                     <span class="wishlist-qty">@T("Wishlist.HeaderQuantity", Model.WishlistItems)</span>
-                    <div>@T("Wishlist")</div>
+                    <div class="d-none d-sm-block" >@T("Wishlist")</div>
                 </a>
             </li>
         }
@@ -51,7 +51,7 @@
                 <a href="@Url.RouteUrl("ShoppingCart")" class="nav-link">
                     <span class="cart-label icon-cart-1">@T("ShoppingCart")</span>
                     <span class="cart-qty"> @T("ShoppingCart.HeaderQuantity", Model.ShoppingCartItems) </span>
-                    <div>@T("ShoppingCart")</div>
+                    <div class="d-none d-sm-block">@T("ShoppingCart")</div>
                 </a>
                 <div class="dropdown-menu dropdown-cart">
                     @await Component.InvokeAsync("FlyoutShoppingCart")
