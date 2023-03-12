@@ -22,6 +22,8 @@ using System.Text;
 using Nop.Data;
 using System.Threading.Tasks;
 using Nop.Plugin.Misc.Omnishop.Models;
+using System.Net.Http;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace Nop.Plugin.Misc.Omnishop.Controllers
 {
@@ -121,12 +123,11 @@ namespace Nop.Plugin.Misc.Omnishop.Controllers
             var totalProducts = productsQuery.Count();
             var products = productsQuery.Skip((searchModel.Page * searchModel.PageSize) - searchModel.PageSize).Take(searchModel.PageSize).ToList();
             var products_suppliers = from product in products
-
-                                     select new ProductSupplierDto()
-                                     {
-                                         Product = product,
-                                         Supplier = null
-                                     };
+                select new ProductSupplierDto()
+                {
+                    Product = product,
+                    Supplier = null
+                };
 
             var productPaging = new PagedList<Product>(products, searchModel.Page, searchModel.PageSize, totalProducts);
 
@@ -137,6 +138,7 @@ namespace Nop.Plugin.Misc.Omnishop.Controllers
 
             return Json(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> ImportFromOmnishop(ICollection<int> selectedIds)
         {
@@ -146,6 +148,40 @@ namespace Nop.Plugin.Misc.Omnishop.Controllers
             {
                 await _nopDataProvider.ExecuteNonQueryAsync("EXEC dbo.spOmniImport");
                 return Json(new { Result = true, Message = "Import from Omnishop completed successfully." });
+            }
+            catch (Exception e)
+            {
+                return Json(new { Result = false, Message = e.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ImportProductImageFromUrl([FromQuery] int productId, [FromQuery] string url)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageProducts))
+                return AccessDeniedView();
+
+            try
+            {
+                using (var clt = new HttpClient())
+                {
+                    var imageBytes = await clt.GetByteArrayAsync(url);
+                    var fileName = System.IO.Path.GetFileName(new Uri(url).LocalPath);
+                    var seName = await _pictureService.GetPictureSeNameAsync(fileName);
+                    var mimeType = GetMimeTypeFromFilePath(fileName);
+
+                    var newPicture = await _pictureService.InsertPictureAsync(imageBytes, mimeType, seName);
+                    await _productService.InsertProductPictureAsync(new ProductPicture
+                    {
+                        //EF has some weird issue if we set "Picture = newPicture" instead of "PictureId = newPicture.Id"
+                        //pictures are duplicated
+                        //maybe because entity size is too large
+                        PictureId = newPicture.Id,
+                        DisplayOrder = 1,
+                        ProductId = productId
+                    });
+                }
+                return Json(new { Result = true, Message = "Import of productimage from " + url + " completed successfully." });
             }
             catch (Exception e)
             {
@@ -210,6 +246,13 @@ namespace Nop.Plugin.Misc.Omnishop.Controllers
             }
         }
         #region Utility
+        static string GetMimeTypeFromFilePath(string filePath)
+        {
+            new FileExtensionContentTypeProvider().TryGetContentType(filePath, out var mimeType);
+
+            //set to jpeg in case mime type cannot be found
+            return mimeType ?? MimeTypes.ImageJpeg;
+        }
 
         private async Task<CustomProductModel> MapCustomProductModel(ProductSupplierDto product)
         {

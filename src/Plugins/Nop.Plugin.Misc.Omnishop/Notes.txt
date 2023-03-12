@@ -30,3 +30,50 @@
 Replace “PLUGIN_OUTPUT_DIRECTORY” in the code above with your real plugin output directory name. 
 
 It’s not required. But this way we can use a new ASP.NET approach to add third-party references. It was introduced in .NET Core. Furthermore, references from already referenced libraries will be loaded automatically. It’s very convenient.
+
+
+
+DELETE FROM LocaleStringResource WHERE ResourceName LIKE 'Plugins.Misc.Omnishop.PublishProducts.List%'
+
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasImages','Images',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasImages.Has','Has image(s)',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasImages.HasNot','Has no images',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasShortDescription','Short description',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasShortDescription.Has','Has short description',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasShortDescription.HasNot','No short description',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasLongDescription','Long description',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasLongDescription.Has','Has long description',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasLongDescription.HasNot','No long description',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasPrice','Price',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasPrice.Has','Price >0',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasPrice.HasNot','Price <=0',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasInventory','Inventory status',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasInventory.Has','In stock',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasInventory.HasNot','Out of stock',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.UpdatedDate','Updated',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.Publish','Publish',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.PublishSelected','Publish selected',1)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.UnPublishSelected','Unpublish selected',1)
+
+
+
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasImages','Bilder',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasImages.Has','Har bilde(r)',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasImages.HasNot','Har ikke bilde',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasShortDescription','Kort beskrivelse',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasShortDescription.Has','Har kort beskrivelse',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasShortDescription.HasNot','Mangler kort beskrivelse',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasLongDescription','Lang beskrivelse',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasLongDescription.Has','Har lang beskrivelse',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasLongDescription.HasNot','Mangler lang beskrivelse',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasPrice','Pris',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasPrice.Has','Pris >0',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasPrice.HasNot','Pris <=0',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasInventory','Lager status',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasInventory.Has','På lager',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.SearchHasInventory.HasNot','Ikke på lager',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.UpdatedDate','Oppdatert',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.Publish','Publisering',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.PublishSelected','Publiser valgte',2)
+INSERT INTO LocaleStringResource (ResourceName, ResourceValue, LanguageId) VALUES ('Plugins.Misc.Omnishop.PublishProducts.List.UnPublishSelected','Avpubliser valgte',2)
+

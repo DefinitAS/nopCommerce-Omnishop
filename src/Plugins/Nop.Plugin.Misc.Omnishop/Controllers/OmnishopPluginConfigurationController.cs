@@ -41,7 +41,15 @@ namespace Nop.Plugin.Misc.Omnishop.Controllers
             {
                 ActiveStoreScopeConfiguration = storeId,
                 ForceCanonicalUrl = pluginSettings.ForceCanonicalUrl,
-                ProductImportApiKey=pluginSettings.ProductImportApiKey
+                ProductImportApiKey=pluginSettings.ProductImportApiKey,
+
+                ApiUrlBase=pluginSettings.ApiUrlBase,
+                ApiUser=pluginSettings.ApiUser,
+                ApiPassword=pluginSettings.ApiPassword,
+                DefaultClientId=pluginSettings.DefaultClientId,
+                EmployeeId=pluginSettings.EmployeeId,
+                OriginCode=pluginSettings.OriginCode,
+                ProductIdShipping=pluginSettings.ProductIdShipping
             };
 
             return View("~/Plugins/Misc.Omnishop/Views/Configure.cshtml", model);
@@ -61,6 +69,15 @@ namespace Nop.Plugin.Misc.Omnishop.Controllers
 
             pluginSettings.ForceCanonicalUrl = model.ForceCanonicalUrl;
             pluginSettings.ProductImportApiKey = model.ProductImportApiKey;
+
+            pluginSettings.ApiUrlBase = model.ApiUrlBase;
+            pluginSettings.ApiUser = model.ApiUser;
+            pluginSettings.ApiPassword = model.ApiPassword;
+            pluginSettings.DefaultClientId = model.DefaultClientId;
+            pluginSettings.EmployeeId = model.EmployeeId;
+            pluginSettings.OriginCode = model.OriginCode;
+            pluginSettings.ProductIdShipping = model.ProductIdShipping;
+
             await _settingService.SaveSettingAsync(pluginSettings);
             await _settingService.ClearCacheAsync();
 

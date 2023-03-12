@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nop.Core.Infrastructure;
 using Nop.Plugin.Misc.Omnishop.Models;
+using Nop.Plugin.Misc.Omnishop.Services;
 using Nop.Services.Configuration;
 
 namespace Nop.Plugin.Misc.Omnishop.Infrastructure
@@ -16,6 +17,7 @@ namespace Nop.Plugin.Misc.Omnishop.Infrastructure
     {
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<IOmnishopOrderService, OmnishopOrderService>();
         }
 
         public void Configure(IApplicationBuilder application)

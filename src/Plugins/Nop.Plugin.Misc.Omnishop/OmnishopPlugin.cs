@@ -76,9 +76,10 @@ namespace Nop.Plugin.Misc.Omnishop
                 {
                     SystemName = "Misc.Omnishop",
                     Title = "Publish products",
+                    IconClass = "far fa-dot-circle",
+                    Visible = true,
                     ControllerName = "PublishProducts",
                     ActionName = "Index",
-                    Visible = true,
                     RouteValues = new RouteValueDictionary() { { "area", "Admin" } },
                 });
 
@@ -99,10 +100,10 @@ namespace Nop.Plugin.Misc.Omnishop
             {
                 SystemName = "Omnishop Plugin",
                 Title = "Omnishop",
-                ControllerName = "OmnishopPluginConfiguration",
-                ActionName = "Configure",
                 IconClass = "far fa-dot-circle",
                 Visible = true,
+                ControllerName = "OmnishopPluginConfiguration",
+                ActionName = "Configure",
                 RouteValues = new RouteValueDictionary { { "area", AreaNames.Admin } }
             });
         }

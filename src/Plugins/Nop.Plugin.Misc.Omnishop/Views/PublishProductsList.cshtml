@@ -219,7 +219,7 @@
                        SearchButtonId = "search-products",
                        Length = Model.PageSize,
                        LengthMenu = Model.AvailablePageSizes,
-                       Ordering = true,
+                       Ordering = false,
                        Filters = new List<FilterParameter>
                             {
                                 new FilterParameter(nameof(Model.SearchHasImagesId)),
@@ -296,6 +296,16 @@
                                 },
                                 new ColumnProperty(nameof(CustomProductModel.Id))
                                 {
+                                    Title = "Picture",
+                                    Width = "100",
+                                    ClassName =  NopColumnClassDefaults.Button,
+                                    Render = new RenderButtonCustom("btn btn-default", "Steal")
+                                    {
+                                        OnClickFunctionName="importProductImageFromUrl"
+                                    }
+                                },
+                                new ColumnProperty(nameof(CustomProductModel.Id))
+                                {
                                     Title = T("Admin.Common.Edit").Text,
                                     Width = "100",
                                     ClassName =  NopColumnClassDefaults.Button,
@@ -309,33 +319,43 @@
 
                         <script>
                             function openEditProduct(data, type, row, meta) {
-                                window.open("Edit/" + data, "_blank");
+                                window.open("/Admin/Product/Edit/" + data, "_blank");
                             }
 
                             function renderColumnPrice(data, type, row, meta) {
                                 return (row.ProductTypeId != @((int)ProductType.GroupedProduct) ) ? data : null;
                             }
 
+                            function importProductImageFromUrl(data, type, row, meta) {
+                                const url =prompt("Lim inn URL til bilde");
+                                if(!url) {
+                                    return false;
+                                }
+
+                                var postData = {
+                                };  
+
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("ImportProductImageFromUrl", "PublishProducts"))?productId=" + data + "&url=" + url,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        alert('Operation failed\n' + textStatus + '\n' + errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        alert(jqXHR.responseJSON.Message);
+                                        updateTable('#products-grid');
+                                    }
+                                });
+
+                            
+                            }
+
+
                             $(document).ready(function () {
 
-                                $('#import-omnishop-products').bind('click', function () {    
-                                    var postData = {
-                                    };                                    
-                                    addAntiForgeryToken(postData);
-                                    $.ajax({
-                                        cache: false,
-                                        type: "POST",
-                                        url: "@(Url.Action("ImportFromOmnishop", "PublishProducts"))",
-                                        error: function (jqXHR, textStatus, errorThrown) {
-                                            alert('Operation failed\n' + textStatus + '\n' + errorThrown);
-                                        },
-                                        complete: function (jqXHR, textStatus) {
-                                            alert(jqXHR.responseJSON.Message);
-                                            updateTable('#products-grid');
-                                        }
-                                    });
-                                    return true;
-                                });
 
                                 $('#publish-selected').bind('click', function () {
                                     var postData = {
