@@ -7,12 +7,6 @@
   }
 } 
 
-@media (max-width: 1199px) {
-  .buttons button:first-child {
-      display: block;
-      margin: auto;
-  }
-}
 @media (min-width: 576px) and (max-width: 1199px){
     .product-grid .item-box {
         width: calc(50% - 20px);
@@ -260,21 +254,9 @@
       width: calc(100% - 20px);
     }
 
-    .category-page .product-box-add-to-cart-button,
-    .home-page-product-grid .product-box-add-to-cart-button,
-    .manufacturer-page .buttons button:first-of-type {
-      width: 100%;
-      margin-bottom: 5px;
-    }
 
     .viewmode-icon.list {
       display: none;
-    }
-
-    .category-page .product-box-add-to-cart-button,
-    .home-page-product-grid .product-box-add-to-cart-button {
-      width: 100%;
-      margin-bottom: 10px;
     }
 
     .card h5 {
