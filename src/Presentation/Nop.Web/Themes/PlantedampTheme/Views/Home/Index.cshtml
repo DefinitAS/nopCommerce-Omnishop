@@ -5,7 +5,7 @@
     NopHtml.AppendPageCssClassParts("html-home-page");
 }
 <div class="page home-page">
-    <div class="page-body">
+    <div class="page-body container-fluid">
         @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HomepageTop })
         <div class="container-fluid" >
             @await Component.InvokeAsync("TopicBlock", new { systemName = "HomePageText" })
