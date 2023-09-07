@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "Coinbase Commerce",
+  "SystemName": "Payments.CoinbaseCommerce",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "Anders Ulveseth, Omnishop AS",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Payments.CoinbaseCommerce.dll",
+  "Description": "This plugin enables payment with Coinbase Commerce"
+}
