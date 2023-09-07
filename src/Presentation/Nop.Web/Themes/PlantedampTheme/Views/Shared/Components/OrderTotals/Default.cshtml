@@ -26,10 +26,6 @@
                 <tr class="shipping-cost">
                     <td class="cart-total-left">
                         <label>@T("ShoppingCart.Totals.Shipping"):</label>
-                        @if (Model.RequiresShipping && !string.IsNullOrEmpty(Model.SelectedShippingMethod))
-                        {
-                            <span class="selected-shipping-method">@T("ShoppingCart.Totals.Shipping.Method", Model.SelectedShippingMethod)</span>
-                        }
                     </td>
                     <td class="cart-total-right">
                         @if (Model.RequiresShipping)
@@ -49,6 +45,7 @@
                         }
                     </td>
                 </tr>
+
             }
             @if (!string.IsNullOrEmpty(Model.PaymentMethodAdditionalFee))
             {

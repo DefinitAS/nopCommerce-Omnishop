@@ -676,8 +676,8 @@
                         <table class="cart-total">
                             <tbody>
                                 <tr>
-                                    <td class="cart-total-left">
-                                        <label>@T("Order.SubTotal"):</label>
+                                    <td class="cart-total-left" style="padding-right:40px">
+                                        <span>@T("Order.SubTotal"):</span>
                                     </td>
                                     <td class="cart-total-right">
                                         <span>@Model.OrderSubtotal</span>
@@ -687,7 +687,7 @@
                                 {
                                     <tr>
                                         <td class="cart-total-left">
-                                            <label>@T("Order.SubTotalDiscount"):</label>
+                                            <span>@T("Order.SubTotalDiscount"):</span>
                                         </td>
                                         <td class="cart-total-right">
                                             <span>@Model.OrderSubTotalDiscount</span>
@@ -698,7 +698,7 @@
                                 {
                                     <tr>
                                         <td class="cart-total-left">
-                                            <label>@T("Order.Shipping"):</label>
+                                            <span>@T("Order.Shipping"):</span>
                                         </td>
                                         <td class="cart-total-right">
                                             <span>@Model.OrderShipping</span>
@@ -709,7 +709,7 @@
                                 {
                                     <tr>
                                         <td class="cart-total-left">
-                                            <label>@T("Order.PaymentMethodAdditionalFee"):</label>
+                                            <span>@T("Order.PaymentMethodAdditionalFee"):</span>
                                         </td>
                                         <td class="cart-total-right">
                                             <span>@Model.PaymentMethodAdditionalFee</span>
@@ -722,7 +722,7 @@
                                     {
                                         <tr>
                                             <td class="cart-total-left">
-                                                <label>@string.Format(T("Order.TaxRateLine").Text, taxRate.Rate):</label>
+                                                <span>@string.Format(T("Order.TaxRateLine").Text, taxRate.Rate):</span>
                                             </td>
                                             <td class="cart-total-right">
                                                 <span>@taxRate.Value</span>
@@ -734,7 +734,7 @@
                                 {
                                     <tr>
                                         <td class="cart-total-left">
-                                            <label>@T("Order.Tax"):</label>
+                                            <span>@T("Order.Tax"):</span>
                                         </td>
                                         <td class="cart-total-right">
                                             <span>@Model.Tax</span>
@@ -745,7 +745,7 @@
                                 {
                                     <tr>
                                         <td class="cart-total-left">
-                                            <label>@T("Order.TotalDiscount"):</label>
+                                            <span>@T("Order.TotalDiscount"):</span>
                                         </td>
                                         <td class="cart-total-right">
                                             <span>@Model.OrderTotalDiscount</span>
@@ -758,7 +758,7 @@
                                     {
                                         <tr>
                                             <td class="cart-total-left">
-                                                <label>@string.Format(T("Order.GiftCardInfo").Text, gc.CouponCode):</label>
+                                                <span>@string.Format(T("Order.GiftCardInfo").Text, gc.CouponCode):</span>
                                             </td>
                                             <td class="cart-total-right">
                                                 <span>@gc.Amount</span>
@@ -770,7 +770,7 @@
                                 {
                                     <tr>
                                         <td class="cart-total-left">
-                                            <label>@string.Format(T("Order.RewardPoints").Text, Model.RedeemedRewardPoints):</label>
+                                            <span>@string.Format(T("Order.RewardPoints").Text, Model.RedeemedRewardPoints):</span>
                                         </td>
                                         <td class="cart-total-right">
                                             <span>@Model.RedeemedRewardPointsAmount</span>
@@ -779,7 +779,7 @@
                                 }
                                 <tr>
                                     <td class="cart-total-left">
-                                        <label>@T("Order.OrderTotal"):</label>
+                                        <span>@T("Order.OrderTotal"):</span>
                                     </td>
                                     <td class="cart-total-right">
                                         <span><strong>@Model.OrderTotal</strong></span>
@@ -790,7 +790,7 @@
                     </div>
                     @if (!Model.PrintMode)
                     {
-                        <div class="actions">
+                        <div class="actions" style="margin-top:20px">
                             @if (Model.IsReOrderAllowed)
                             {
                                 <input type="button" value="@T("Order.Reorder")" class="btn button-2" onclick="setLocation('@Url.RouteUrl("ReOrder", new { orderId = Model.Id })    ')" />
