@@ -7,6 +7,7 @@ using Nop.Web.Models.Common;
 using Nop.Web.Framework.Models;
 using Nop.Web.Models.Checkout;
 using Nop.Web.Models.Customer;
+using Nop.Core.Domain.Shipping;
 
 namespace Nop.Plugin.Misc.SimpleCheckOut.Models
 {
@@ -20,11 +21,14 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Models
         public bool ShowRegistration { get; set; }
         public AddressModel SelectedBillingAddress { get; set; }
         public AddressModel SelectedShippingAddress { get; set; }
+        public string SelectedPaymentMethod { get;  set; }
 
         public LoginModel LoginModel { get; set; } 
         public CheckoutConfirmModel ConfirmModel { get; set; }
         public CheckoutBillingAddressModel BillingAddressModel { get; set; }
         public CheckoutShippingAddressModel ShippingAddressModel { get; set; }
+        public CheckoutPaymentMethodModel PaymentMethodModel { get; set; }
+        public ShippingOption SelectedShippingOption { get; set; }
 
     }
 }

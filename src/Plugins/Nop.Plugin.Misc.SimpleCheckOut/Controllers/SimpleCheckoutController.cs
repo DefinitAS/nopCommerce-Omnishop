@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -116,24 +117,40 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
 
         public virtual async Task<IActionResult> Index()
         {
+            var customer = await _workContext.GetCurrentCustomerAsync();
+            var store = await _storeContext.GetCurrentStoreAsync();
+            var cart = await _shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id);
+
+            var selectedShippingOptionBeforeCheckout = await _genericAttributeService.GetAttributeAsync<ShippingOption>(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, store.Id);
+            var selectedPickupPointBeforeCheckout = await _genericAttributeService.GetAttributeAsync<PickupPoint>(customer, NopCustomerDefaults.SelectedPickupPointAttribute, store.Id);
+
             var checkoutIndexResult = await ValidateCheckoutIsValid();
             if (checkoutIndexResult != null)
             {
                 return checkoutIndexResult;
             }
 
-            var customer = await _workContext.GetCurrentCustomerAsync();
-            var store = await _storeContext.GetCurrentStoreAsync();
-            var cart = await _shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id);
-            var model = await CreateSimpleCheckoutModel(customer, cart);
-
             //ShippingMethod
             var shippingMethodModel = await _checkoutModelFactory.PrepareShippingMethodModelAsync(cart, await _customerService.GetCustomerShippingAddressAsync(customer));
             var selectedShippingOption = await _genericAttributeService.GetAttributeAsync<ShippingOption>(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, store.Id);
+            if (selectedShippingOption==null && selectedShippingOptionBeforeCheckout != null)
+            {
+                selectedShippingOption = selectedShippingOptionBeforeCheckout;
+            }
+
             if (selectedShippingOption == null && shippingMethodModel.ShippingMethods.Any())
             {
-                await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, shippingMethodModel.ShippingMethods.First().ShippingOption, store.Id);
+                selectedShippingOption = shippingMethodModel.ShippingMethods.First().ShippingOption;
             }
+
+            await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, selectedShippingOption, store.Id);
+
+            if (selectedShippingOption.IsPickupInStore && selectedPickupPointBeforeCheckout != null)
+            {
+                await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedPickupPointAttribute, selectedPickupPointBeforeCheckout, store.Id);
+            }
+
+
 
             //PaymentMethod
             var filterByCountryId = 0;
@@ -168,10 +185,9 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
 
             //    return RedirectToRoute("CheckoutConfirm");
             //}
-
+            var model = await CreateSimpleCheckoutModel(customer, cart);
             return View("~/Plugins/Misc.SimpleCheckOut/Views/SimpleCheckout.cshtml", model);
         }
-
 
         [HttpPost]
         [ValidateCaptcha]
@@ -240,7 +256,6 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
             return RedirectToRoute("SimpleCheckout");
         }
 
-
         [HttpPost, ActionName("Index")]
         public virtual async Task<IActionResult> ConfirmOrder(SimpleCheckoutModel simpleCheckoutModel, IFormCollection form)
         {
@@ -266,24 +281,8 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
                 ModelState.AddModelError("", error);
             }
 
-            //validate model
-            //if (!ModelState.IsValid)
-            //{
-            //    //model is not valid. redisplay the form with errors
-            //    var billingAddressModel = await _checkoutModelFactory.PrepareBillingAddressModelAsync(cart,
-            //        selectedCountryId: newAddress.CountryId,
-            //        overrideAttributesXml: customAttributes);
-            //    billingAddressModel.NewAddressPreselected = true;
-            //    return Json(new
-            //    {
-            //        update_section = new UpdateSectionJsonModel
-            //        {
-            //            name = "billing",
-            //            html = await RenderPartialViewToStringAsync("OpcBillingAddress", billingAddressModel)
-            //        },
-            //        wrong_billing_address = true,
-            //    });
-            //}
+            //save
+            await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedPaymentMethodAttribute, simpleCheckoutModel.SelectedPaymentMethod, store.Id);
 
 
             await UpdateBillingAddress(simpleCheckoutModel, customer, customAttributes);
@@ -354,6 +353,88 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
             return View("~/Plugins/Misc.SimpleCheckOut/Views/SimpleCheckout.cshtml", model);
         }
 
+
+        [HttpPost, ActionName("SelectShippingMethod")]
+        public virtual async Task<IActionResult> SelectShippingMethod(string shippingMethod, IFormCollection form)
+        {
+            var customer = await _workContext.GetCurrentCustomerAsync();
+            var store = await _storeContext.GetCurrentStoreAsync();
+            var cart = await _shoppingCartService.GetShoppingCartAsync(customer, ShoppingCartType.ShoppingCart, store.Id);
+
+            var returnRoute = "ShoppingCart";
+
+            if (!cart.Any())
+                return RedirectToRoute(returnRoute);
+
+            var splittedOption = shippingMethod.Split("___");
+
+            if (splittedOption[0]== "PickupPoint")
+            {
+                var selectedPoint = (await _shippingService.GetPickupPointsAsync(customer.BillingAddressId ?? 0,
+                    customer, splittedOption[2], store.Id)).PickupPoints.FirstOrDefault(x => x.Id.Equals(splittedOption[1]));
+
+                if (selectedPoint == null)
+                    throw new Exception("Pickup point is not allowed");
+
+                await SavePickupOptionAsync(selectedPoint);
+                return RedirectToRoute("ShoppingCart");
+            }
+
+            if (splittedOption.Length != 2)
+                return RedirectToRoute(returnRoute);
+            var selectedName = splittedOption[0];
+            var shippingRateComputationMethodSystemName = splittedOption[1];
+
+            //find it
+            //performance optimization. try cache first
+            var shippingOptions = await _genericAttributeService.GetAttributeAsync<List<ShippingOption>>(customer,
+                NopCustomerDefaults.OfferedShippingOptionsAttribute, store.Id);
+            if (shippingOptions == null || !shippingOptions.Any())
+            {
+                //not found? let's load them using shipping service
+                shippingOptions = (await _shippingService.GetShippingOptionsAsync(cart, await _customerService.GetCustomerShippingAddressAsync(customer),
+                    customer, shippingRateComputationMethodSystemName, store.Id)).ShippingOptions.ToList();
+            }
+            else
+            {
+                //loaded cached results. let's filter result by a chosen shipping rate computation method
+                shippingOptions = shippingOptions.Where(so => so.ShippingRateComputationMethodSystemName.Equals(shippingRateComputationMethodSystemName, StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
+            }
+
+            var shippingOption = shippingOptions
+                .Find(so => !string.IsNullOrEmpty(so.Name) && so.Name.Equals(selectedName, StringComparison.InvariantCultureIgnoreCase));
+
+            //save
+            await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, shippingOption, store.Id);
+            return RedirectToRoute("ShoppingCart");
+
+        }
+
+        /// <summary>
+        /// Saves the pickup option
+        /// </summary>
+        /// <param name="pickupPoint">The pickup option</param>
+        protected virtual async Task SavePickupOptionAsync(PickupPoint pickupPoint)
+        {
+            var name = !string.IsNullOrEmpty(pickupPoint.Name) ?
+                string.Format(await _localizationService.GetResourceAsync("Checkout.PickupPoints.Name"), pickupPoint.Name) :
+                await _localizationService.GetResourceAsync("Checkout.PickupPoints.NullName");
+            var pickUpInStoreShippingOption = new ShippingOption
+            {
+                Name = name,
+                Rate = pickupPoint.PickupFee,
+                Description = pickupPoint.Description,
+                ShippingRateComputationMethodSystemName = pickupPoint.ProviderSystemName,
+                IsPickupInStore = true
+            };
+
+            var customer = await _workContext.GetCurrentCustomerAsync();
+            var store = await _storeContext.GetCurrentStoreAsync();
+            await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, pickUpInStoreShippingOption, store.Id);
+            await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.SelectedPickupPointAttribute, pickupPoint, store.Id);
+        }
+
         private async Task UpdateBillingAddress(SimpleCheckoutModel simpleCheckoutModel, Customer customer, string customAttributes)
         {
             if (simpleCheckoutModel.SelectedBillingAddress.Id != 0)
@@ -410,7 +491,7 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
 
         private async Task UpdateShippingAddress(SimpleCheckoutModel simpleCheckoutModel, Customer customer, string customAttributes)
         {
-            if (simpleCheckoutModel.BillingAddressModel.ShipToSameAddress)
+            if (simpleCheckoutModel.BillingAddressModel == null || simpleCheckoutModel.BillingAddressModel.ShipToSameAddress)
             {
                 customer.ShippingAddressId = customer.BillingAddressId;
             }
@@ -468,10 +549,13 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
             //model
             var anonymousCheckoutMandatory = _orderSettings.AnonymousCheckoutAllowed && _customerSettings.UserRegistrationType == UserRegistrationType.Disabled;
             var isGuest = await _customerService.IsGuestAsync(customer);
+            var store = await _storeContext.GetCurrentStoreAsync();
             var model = new SimpleCheckoutModel()
             {
                 ShowLogin = !anonymousCheckoutMandatory && isGuest,
                 ShowRegistration = isGuest && _customerSettings.UserRegistrationType != UserRegistrationType.Disabled,
+                PaymentMethodModel = await _checkoutModelFactory.PreparePaymentMethodModelAsync(cart, 0),
+                SelectedShippingOption = await _genericAttributeService.GetAttributeAsync<ShippingOption>(customer, NopCustomerDefaults.SelectedShippingOptionAttribute, store.Id),
                 ShippingAddressModel = await _checkoutModelFactory.PrepareShippingAddressModelAsync(cart, prePopulateNewAddressWithCustomerFields: true),
                 BillingAddressModel = await _checkoutModelFactory.PrepareBillingAddressModelAsync(cart, prePopulateNewAddressWithCustomerFields: true),
                 ConfirmModel = await _checkoutModelFactory.PrepareConfirmOrderModelAsync(cart),
@@ -498,7 +582,7 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Controllers
 
 
             //Do not set Shipping Addres if same as billingaddress
-            if(customer.ShippingAddressId!=customer.BillingAddressId)
+            if (customer.ShippingAddressId!=customer.BillingAddressId)
             {
                 if (customer.ShippingAddressId.HasValue)
                 {

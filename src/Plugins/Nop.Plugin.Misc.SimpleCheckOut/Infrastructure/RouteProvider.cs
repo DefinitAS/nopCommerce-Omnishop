@@ -64,6 +64,11 @@ namespace Nop.Plugin.Misc.SimpleCheckOut.Infrastructure
                 pattern: $"{lang}/checkout",
                 defaults: new { controller = "SimpleCheckout", action = "Index" });
 
+            //Shipping method widget on shoppingcartpage
+            endpointRouteBuilder.MapControllerRoute(name: "CartShippingMethod",
+                pattern: $"{lang}/cart/selectshippingmethod/{{shippingMethod}}",
+                defaults: new { controller = "SimpleCheckout", action = "SelectShippingMethod" });
+
             //checkout/completed should still be routed to nopCommerce ordinary checkoutcontroller
             endpointRouteBuilder.MapControllerRoute(name: "CheckoutCompleted",
                 pattern: $"{lang}/checkout/completed/{{orderId:int?}}",

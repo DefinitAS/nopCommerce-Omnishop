@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Routing;
 using Nop.Core;
+using Nop.Services.Cms;
 using Nop.Services.Common;
 using Nop.Services.Plugins;
 using Nop.Services.Security;
@@ -10,7 +12,7 @@ using Nop.Web.Framework.Menu;
 
 namespace Nop.Plugin.Misc.SimpleCheckOut
 {
-    public partial class SimpleCheckOutPlugin : BasePlugin, IAdminMenuPlugin, IMiscPlugin
+    public partial class SimpleCheckOutPlugin : BasePlugin, IAdminMenuPlugin, IMiscPlugin, IWidgetPlugin
     {
         private readonly IPermissionService _permissionService;
         private readonly IWebHelper _webHelper;
@@ -20,6 +22,19 @@ namespace Nop.Plugin.Misc.SimpleCheckOut
         {
             _permissionService = permissionService;
             _webHelper = webHelper;
+        }
+
+        public bool HideInWidgetList => false;
+
+        public string GetWidgetViewComponentName(string widgetZone)
+        {
+            return "SimpleCheckout_ShippingOptions";
+        }
+
+        public Task<IList<string>> GetWidgetZonesAsync()
+        {
+            IList<string> result = new[] { "order_summary_cart_footer" };
+            return Task.FromResult(result);
         }
 
         public override string GetConfigurationPageUrl()

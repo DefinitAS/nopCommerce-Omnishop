@@ -1,0 +1,73 @@
+﻿@model Nop.Web.Models.Checkout.CheckoutShippingMethodModel
+@if (Model.Warnings.Count == 0)
+{
+    @if (Model.DisplayPickupInStore && Model.PickupPointsModel.AllowPickupInStore && Model.PickupPointsModel.PickupPoints.Count > 0)
+    {
+        <script type="text/javascript">
+        function selectShippingMethod(sender, value) {
+            const form = $(sender).closest("form");
+            form.attr("action", form.attr("action") + "/selectshippingmethod/" + value);
+            form.submit();
+        }
+        </script>
+    }
+    <div style="border:solid 1px #4caf50;padding-top:0px;margin-bottom:12px">
+    <div class="title" style="background-color:#f1f5f9;padding:8px 8px;border-bottom:">Levering</div>
+    @{var selectedOptionValue = (string)Model.CustomProperties["SelectedOption"];   }
+    <ul class="method-list" style="list-style-type:none;margin-left:-8px;margin-top:8px;margin-bottom:4px">
+        @for (var i = 0; i < Model.ShippingMethods.Count; i++)
+        {
+            var shippingMethod = Model.ShippingMethods[i];
+            var inputValue=$"{shippingMethod.Name}___{shippingMethod.ShippingRateComputationMethodSystemName}";
+            <li style="margin-bottom:8px">
+                <div class="method-name">
+                    <input onclick="selectShippingMethod(this, value)" id="shippingoption_@(i)" type="radio" name="shippingoption" value="@inputValue" checked="@(inputValue==selectedOptionValue)" />
+                    <label style="margin-left:-24px;font-weight:bold;margin-bottom:0px" for="shippingoption_@(i)">@shippingMethod.Name</label>
+                    <label style="margin-bottom:0px" for="shippingoption_@(i)">@shippingMethod.Fee</label>
+                </div>
+                @if (!string.IsNullOrEmpty(shippingMethod.Description))
+                {
+                    <div class="method-description">
+                        @Html.Raw(shippingMethod.Description)
+                    </div>
+                }
+            </li>
+        }
+        @if (Model.DisplayPickupInStore && Model.PickupPointsModel.AllowPickupInStore && Model.PickupPointsModel.PickupPoints.Count>0)
+        {
+            var point = Model.PickupPointsModel.PickupPoints[0];
+            var inputValue = ($"PickupPoint___{point.Id}___{point.ProviderSystemName}");
+            <li style="margin-bottom:8px">
+                <div class="method-name">
+                    <input  onclick="selectShippingMethod(this, value)" id="PickupInStore" type="radio" name="shippingoption" value="@inputValue"   checked="@(inputValue==selectedOptionValue)" />
+                    <label style="margin-left:-24px;font-weight:bold;margin-bottom:0px" for="PickupInStore">@("Henting i " +  point.Name)</label>
+                    <label style="margin-bottom:0px" for="PickupInStore">@point.PickupFee</label>
+                </div>
+                @if (!string.IsNullOrEmpty(point.Description))
+                {
+                    <div class="method-description">
+                        @Html.Raw(point.Description)
+                    </div>
+                }
+            </li>                            
+        }
+    </ul>
+    </div>
+    if (Model.NotifyCustomerAboutShippingFromMultipleLocations)
+    {
+        <div class="multiple-locations">
+            @T("Checkout.ShippingMethod.ShippingFromMultipleLocations")
+        </div>
+    }
+}
+else
+{
+    <div class="message-error">
+        <ul>
+            @foreach (var warning in Model.Warnings)
+            {
+                <li>@warning</li>
+            }
+        </ul>
+    </div>
+}
